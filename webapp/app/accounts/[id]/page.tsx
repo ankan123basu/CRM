@@ -74,7 +74,7 @@ function AccountDetail() {
       </Link>
 
       {/* ── Header ── */}
-      <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-6 md:p-8">
+      <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6 md:p-8">
         <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-6">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
@@ -84,7 +84,7 @@ function AccountDetail() {
               </span>
               {a.icpFit === 'NO' && <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-50 text-red-700">Outside ICP</span>}
             </div>
-            <h1 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">{a.name}</h1>
+            <h1 className="mt-3 font-display text-4xl md:text-5xl font-semibold tracking-[-0.035em] leading-[1.02] text-[#0d0d0d] dark:text-white">{a.name}</h1>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
               {a.website && <a href={a.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-blue-700"><Globe className="w-3.5 h-3.5" />{a.domain}</a>}
               <span>{a.city ?? 'City unknown'}{a.cityTier !== 'OUT' ? ` · ${a.cityTier} city` : ''}</span>
@@ -136,10 +136,10 @@ function AccountDetail() {
           <AccountXRay stakeholders={stakeholders} />
 
           {/* ── Stakeholders ── */}
-          <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
+          <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Stakeholders</h2>
+                <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-[#0d0d0d] dark:text-white">Stakeholders</h2>
                 <p className="text-sm text-gray-500">By function, in priority order: CFO, CHRO, Finance head, HR head, C&amp;B, Total Rewards, Payroll.</p>
               </div>
               {canAdd && (
@@ -154,7 +154,7 @@ function AccountDetail() {
                 if (!list.length) return null
                 return (
                   <div key={d}>
-                    <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-600 mb-2">{DEPARTMENT_LABEL[d]} · {list.length}</h3>
+                    <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-[#0a4a1f] mb-2">{DEPARTMENT_LABEL[d]} · {list.length}</h3>
                     <div className="grid md:grid-cols-2 gap-3">
                       {list.map((s: Any) => <StakeholderCard key={s.id} s={s} />)}
                     </div>
@@ -166,8 +166,8 @@ function AccountDetail() {
           </section>
 
           {/* ── Timeline ── */}
-          <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Timeline</h2>
+          <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6">
+            <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-[#0d0d0d] dark:text-white">Timeline</h2>
             {viewer.restricted && <p className="text-xs text-gray-500 mt-1 inline-flex items-center gap-1"><Lock className="w-3 h-3" /> Prospecting zone: you see your own touches only.</p>}
             <ol className="mt-4 relative border-l border-gray-200 dark:border-gray-700 ml-2 space-y-4">
               {activities.length === 0 && <li className="pl-5 text-sm text-gray-500">No activity yet.</li>}
@@ -192,8 +192,8 @@ function AccountDetail() {
 
         {/* ── Right rail ── */}
         <aside className="space-y-6">
-          <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Open tasks</h2>
+          <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6">
+            <h2 className="font-display text-xl font-semibold tracking-[-0.02em] text-[#0d0d0d] dark:text-white">Open tasks</h2>
             <ul className="mt-3 space-y-2">
               {tasks.length === 0 && <li className="text-sm text-gray-500">Nothing open.</li>}
               {tasks.map((t: Any) => (
@@ -207,8 +207,8 @@ function AccountDetail() {
             </ul>
           </section>
 
-          <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Meetings</h2>
+          <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6">
+            <h2 className="font-display text-xl font-semibold tracking-[-0.02em] text-[#0d0d0d] dark:text-white">Meetings</h2>
             <ul className="mt-3 space-y-3">
               {meetings.length === 0 && <li className="text-sm text-gray-500">No meetings booked yet.</li>}
               {meetings.map((m: Any) => {
@@ -233,9 +233,9 @@ function AccountDetail() {
           </section>
 
           {sql && (
-            <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
+            <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">SQL</h2>
+                <h2 className="font-display text-xl font-semibold tracking-[-0.02em] text-[#0d0d0d] dark:text-white">SQL</h2>
                 <span className={cn('text-xs font-semibold px-2.5 py-0.5 rounded-full', sql.status === 'QUALIFIED' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700')}>
                   {sql.status.replace(/_/g, ' ').toLowerCase()}
                 </span>
@@ -253,8 +253,8 @@ function AccountDetail() {
             </section>
           )}
 
-          <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white inline-flex items-center gap-2"><History className="w-4 h-4" /> History</h2>
+          <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6">
+            <h2 className="font-display text-xl font-semibold tracking-[-0.02em] text-[#0d0d0d] dark:text-white inline-flex items-center gap-2"><History className="w-4 h-4" /> History</h2>
             <ul className="mt-3 space-y-2 text-sm">
               {assignments.map((h: Any) => (
                 <li key={h.id}><span className="font-semibold">Assigned to {h.toAeName}</span> by {h.byName} · <span className="text-gray-500">{formatDateIST(h.at)}</span>{h.reason && <span className="block text-xs text-gray-500">{h.reason}</span>}</li>
@@ -296,10 +296,10 @@ function AccountXRay({ stakeholders }: { stakeholders: Any[] }) {
   const seniorEngaged = stakeholders.some((s) => ['L1', 'L2'].includes(s.level) && ENGAGED.includes(s.engagement))
 
   return (
-    <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 p-6">
+    <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Account X-ray</h2>
+          <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-[#0d0d0d] dark:text-white">Account X-ray</h2>
           <p className="text-sm text-gray-500">Who we reach, by function and seniority.</p>
         </div>
         <div className="flex flex-wrap gap-2 text-xs font-semibold">
@@ -364,7 +364,7 @@ function StakeholderCard({ s }: { s: Any }) {
   }
   const phones = (s.phones ?? []) as { number: string; invalid: boolean }[]
   return (
-    <div className="rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
+    <div className="rounded-[1.5rem] border border-[#e6e6e8] dark:border-gray-700 p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="font-semibold text-gray-900 dark:text-white flex items-center gap-1.5">
@@ -431,7 +431,7 @@ function AddStakeholderModal({ accountId, stakeholders, onClose, onSaved }: { ac
       <form onClick={(e) => e.stopPropagation()} onSubmit={submit} className="w-full sm:max-w-lg max-h-[92dvh] overflow-y-auto bg-white dark:bg-gray-900 rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Add stakeholder</h2>
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] text-[#0d0d0d] dark:text-white">Add stakeholder</h2>
             <p className="text-sm text-gray-500 mt-1">Level comes from the designation map. We check e-mail, LinkedIn and phone for duplicates.</p>
           </div>
           <button type="button" onClick={onClose} aria-label="Close" className="p-1 text-gray-400 hover:text-gray-700"><X className="w-5 h-5" /></button>

@@ -96,7 +96,7 @@ export default function AccountsPage() {
     <div className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-5">
       <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Accounts</h1>
+          <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-[-0.035em] leading-[1.02] text-[#0d0d0d] dark:text-white">Accounts<span className="text-[#a1a1aa]">, in one place.</span></h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
         </div>
         {role && role !== 'AE' && (
@@ -154,7 +154,7 @@ export default function AccountsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 rounded-[1.5rem] border border-[#e6e6e8] dark:border-gray-700 overflow-hidden">
         {error ? (
           <div className="p-10 text-center">
             <p className="text-sm text-red-600">{error}</p>
@@ -254,7 +254,7 @@ function AccountRowView({ r }: { r: AccountRow }) {
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: 'warn' | 'bad' }) {
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 px-4 py-3">
+    <div className="bg-white dark:bg-gray-900 rounded-[1.5rem] border border-[#e6e6e8] dark:border-gray-700 px-4 py-3">
       <p className="text-xs text-gray-500">{label}</p>
       <p className={cn('font-display text-2xl font-bold tabular-nums mt-0.5', tone === 'bad' ? 'text-red-600' : tone === 'warn' ? 'text-amber-600' : 'text-gray-900 dark:text-white')}>{value}</p>
     </div>
@@ -308,7 +308,7 @@ function AddAccountModal({ onClose }: { onClose: () => void }) {
       <form onClick={(e) => e.stopPropagation()} onSubmit={submit} className="w-full sm:max-w-lg bg-white dark:bg-gray-900 rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Add account</h2>
+            <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] text-[#0d0d0d] dark:text-white">Add account</h2>
             <p className="text-sm text-gray-500 mt-1">We check the name and website for duplicates first.</p>
           </div>
           <button type="button" onClick={onClose} aria-label="Close" className="p-1 text-gray-400 hover:text-gray-700"><X className="w-5 h-5" /></button>

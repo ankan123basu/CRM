@@ -4,7 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { Loader2, ArrowUpRight } from 'lucide-react'
+import { Loader2, ArrowUpRight, PhoneCall, BadgeCheck, Handshake } from 'lucide-react'
+import { Headline, IconPanel, Sparkle, Tag } from '@/components/prosperr/brand'
 import { ProsperrLogo } from '@/components/ProsperrLogo'
 
 function GoogleIcon() {
@@ -47,137 +48,109 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f3f3f5] dark:bg-gray-950">
-      {/* Announcement strip, as on prosperr.io */}
-      <div className="bg-[#053f1a] text-[#ffffff] text-xs sm:text-sm font-medium text-center py-2.5 px-4">
-        Prosperr Sales CRM · one source of truth from first call to implementation
-      </div>
+      {/* Header, as on prosperr.io: logo left, a single pill CTA right */}
+      <header className="border-b border-[#0d0d0d]/80 bg-[#f3f3f5]/95 dark:bg-gray-950">
+        <div className="max-w-[1240px] mx-auto flex items-center justify-between gap-4 px-4 sm:px-8 h-16 sm:h-20">
+          <ProsperrLogo size={30} />
+          <span className="inline-flex items-center gap-2 rounded-full bg-[#0a4a1f] text-[#ffffff] px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold">
+            Sales CRM
+          </span>
+        </div>
+      </header>
 
-      <div className="flex-1 grid lg:grid-cols-[1.1fr_1fr]">
-        {/* ── Brand panel ── */}
-        <section
-          className="relative hidden lg:flex flex-col justify-between overflow-hidden p-12 text-[#ffffff]"
-          style={{ background: 'radial-gradient(120% 90% at 10% 0%, #0d5a28 0%, #053f1a 45%, #021a0c 100%)' }}
-        >
-          <div
-            aria-hidden
-            className="absolute -right-24 -bottom-24 w-[420px] h-[420px] rounded-full opacity-20"
-            style={{ background: 'radial-gradient(circle, #4ae386 0%, transparent 65%)' }}
-          />
-          <ProsperrLogo tone="light" size={30} product="Sales CRM" />
+      <main className="flex-1 max-w-[1240px] w-full mx-auto px-4 sm:px-8 py-10 sm:py-16 grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-16 items-center">
+        {/* ── Story ── */}
+        <section className="min-w-0">
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#0a4a1f]">
+            <Sparkle className="w-4 h-4" /> For the Prosperr B2B sales team
+          </p>
+          <Headline className="mt-4 text-[2.6rem] sm:text-6xl">
+            Every account, stakeholder and next step,
+            <span className="text-[#a1a1aa]"> managed in one place.</span>
+          </Headline>
+          <p className="mt-5 text-lg text-[#52525b] dark:text-gray-400 max-w-lg">
+            From a BDR&apos;s first call to a signed Flexi Benefit Plan, with every CFO, CHRO and payroll head threaded in.
+          </p>
 
-          <div className="relative max-w-xl">
-            <h1 className="text-5xl xl:text-6xl font-bold leading-[1.02] tracking-tight text-balance">
-              Every account. An owner. A dated next step.
-            </h1>
-            <p className="mt-5 text-lg text-[#ffffff]/75 max-w-md">
-              From a BDR&apos;s first call to the L3 negotiation, with every stakeholder threaded in.
-            </p>
-
-            {/* Stage rail: the journey this CRM tracks */}
-            <ol className="mt-10 flex flex-wrap items-center gap-2 text-sm font-semibold">
-              {['Prospect', 'SQL', 'L1', 'L2', 'L3', 'Won'].map((stage, i, all) => (
-                <li key={stage} className="flex items-center gap-2">
-                  <span
-                    className={`px-3.5 py-1.5 rounded-full border ${
-                      stage === 'Won'
-                        ? 'bg-[#d7b773] border-[#d7b773] text-[#053f1a]'
-                        : 'border-[#ffffff]/25 bg-[#ffffff]/5'
-                    }`}
-                  >
-                    {stage}
-                  </span>
-                  {i < all.length - 1 && <span className="text-[#ffffff]/35">→</span>}
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <dl className="relative grid grid-cols-3 gap-6 border-t border-[#ffffff]/15 pt-6 max-w-xl">
+          <div className="mt-8 grid sm:grid-cols-3 gap-3">
             {[
-              ['248', 'active accounts'],
-              ['297', 'inactive, ready to revive'],
-              ['2,226', 'contacts to migrate'],
-            ].map(([n, label]) => (
-              <div key={label}>
-                <dt className="font-display text-3xl font-bold tabular-nums">{n}</dt>
-                <dd className="text-xs text-[#ffffff]/60 mt-1">{label}</dd>
+              { icon: PhoneCall, title: 'Prospecting', tags: ['Calls', 'Sequences', 'Referrals'] },
+              { icon: BadgeCheck, title: 'Qualification', tags: ['ICP checks', 'BANT', 'SQL'] },
+              { icon: Handshake, title: 'Pipeline', tags: ['L1–L3', 'Multithreading', 'Revival'] },
+            ].map(({ icon: Icon, title, tags }, i) => (
+              <div key={title} className="rounded-[1.75rem] bg-white dark:bg-gray-900 p-2 shadow-[0_1px_0_rgba(13,13,13,0.04)]">
+                <IconPanel seed={i + 2} className="h-24 sm:h-28">
+                  <Icon className="w-10 h-10" strokeWidth={2.25} />
+                </IconPanel>
+                <div className="px-2 pt-3 pb-2">
+                  <p className="font-display text-lg font-semibold text-[#0d0d0d] dark:text-white">{title}</p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {tags.map((t) => <Tag key={t} className="text-xs px-2.5 py-0.5">{t}</Tag>)}
+                  </div>
+                </div>
               </div>
             ))}
-          </dl>
-        </section>
-
-        {/* ── Sign-in form ── */}
-        <section className="flex items-center justify-center px-4 py-12">
-          <div className="w-full max-w-md">
-            <div className="lg:hidden flex justify-center mb-8">
-              <ProsperrLogo size={30} product="Sales CRM" />
-            </div>
-
-            <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-[0_20px_60px_-30px_rgba(5,63,26,0.35)] p-8 sm:p-10">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back</h2>
-              <p className="text-sm text-gray-500 mt-1.5 mb-7">Sign in with your Prosperr work account.</p>
-
-              <button
-                onClick={() => handleOAuth('google')}
-                disabled={oauthLoading !== null}
-                className="w-full flex items-center justify-center gap-2.5 border border-gray-300 dark:border-gray-700 rounded-full py-3 text-sm font-semibold text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-60"
-              >
-                {oauthLoading === 'google' ? <Loader2 className="w-4 h-4 animate-spin" /> : <GoogleIcon />}
-                Continue with Google
-              </button>
-
-              <div className="flex items-center gap-3 my-6">
-                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-                <span className="text-xs text-gray-400">or use email</span>
-                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                    Work email
-                  </label>
-                  <input id="email" type="email" required value={email}
-                    onChange={e => setEmail(e.target.value)} placeholder="name@prosperr.io"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
-                  />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Password
-                    </label>
-                    <Link href="/forgot-password" className="text-xs font-medium text-blue-600 hover:underline">Forgot password?</Link>
-                  </div>
-                  <input id="password" type="password" required autoComplete="current-password" value={password}
-                    onChange={e => setPassword(e.target.value)} placeholder="••••••••"
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
-                  />
-                </div>
-
-                {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>
-                )}
-
-                <button type="submit" disabled={loading}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3.5 rounded-full transition-colors text-sm shadow-sm">
-                  {loading ? 'Signing in…' : 'Sign in'}
-                  {!loading && <ArrowUpRight className="w-4 h-4" />}
-                </button>
-              </form>
-
-              <p className="text-center text-sm text-gray-500 mt-7">
-                New to the team?{' '}
-                <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">Create an account</Link>
-              </p>
-            </div>
-
-            <p className="text-center text-xs text-gray-400 mt-6">
-              Internal tool · Access is limited to the Prosperr sales team
-            </p>
           </div>
         </section>
-      </div>
+
+        {/* ── Sign-in card ── */}
+        <section className="w-full max-w-md lg:justify-self-end">
+          <div className="rounded-[2rem] bg-white dark:bg-gray-900 p-7 sm:p-9 shadow-[0_30px_80px_-40px_rgba(5,63,26,0.35)]">
+            <Headline as="h2" className="text-3xl sm:text-4xl" muted="Sign in.">Welcome back.</Headline>
+            <p className="text-sm text-[#52525b] dark:text-gray-400 mt-2 mb-7">Use your Prosperr work account.</p>
+
+            <button
+              onClick={() => handleOAuth('google')}
+              disabled={oauthLoading !== null}
+              className="w-full flex items-center justify-center gap-2.5 border border-[#dcdcde] dark:border-gray-700 rounded-full py-3 text-sm font-semibold text-[#0d0d0d] dark:text-gray-200 hover:border-[#0d0d0d] transition-colors disabled:opacity-60"
+            >
+              {oauthLoading === 'google' ? <Loader2 className="w-4 h-4 animate-spin" /> : <GoogleIcon />}
+              Continue with Google
+            </button>
+
+            <div className="flex items-center gap-3 my-6">
+              <div className="flex-1 h-px bg-[#dcdcde] dark:bg-gray-700" />
+              <span className="text-xs text-[#a1a1aa]">or with e-mail</span>
+              <div className="flex-1 h-px bg-[#dcdcde] dark:bg-gray-700" />
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-[#121212] dark:text-gray-300 mb-1.5">Work e-mail</label>
+                <input id="email" type="email" required autoComplete="email" value={email}
+                  onChange={e => setEmail(e.target.value)} placeholder="name@prosperr.io"
+                  className="w-full px-5 py-3 border border-[#dcdcde] dark:border-gray-700 rounded-full text-sm text-[#0d0d0d] dark:text-gray-100 bg-[#f9f9fa] dark:bg-gray-800 placeholder-[#a1a1aa] focus:outline-none focus:ring-2 focus:ring-[#0a4a1f] focus:border-transparent transition"
+                />
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label htmlFor="password" className="block text-sm font-medium text-[#121212] dark:text-gray-300">Password</label>
+                  <Link href="/forgot-password" className="text-xs font-semibold text-[#0a4a1f] hover:underline">Forgot password?</Link>
+                </div>
+                <input id="password" type="password" required autoComplete="current-password" value={password}
+                  onChange={e => setPassword(e.target.value)} placeholder="••••••••"
+                  className="w-full px-5 py-3 border border-[#dcdcde] dark:border-gray-700 rounded-full text-sm text-[#0d0d0d] dark:text-gray-100 bg-[#f9f9fa] dark:bg-gray-800 placeholder-[#a1a1aa] focus:outline-none focus:ring-2 focus:ring-[#0a4a1f] focus:border-transparent transition"
+                />
+              </div>
+
+              {error && (
+                <div role="alert" className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-2xl">{error}</div>
+              )}
+
+              <button type="submit" disabled={loading}
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#0a4a1f] hover:bg-[#053f1a] disabled:opacity-60 text-[#ffffff] font-semibold py-3.5 rounded-full transition-colors text-sm">
+                {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Signing in…</> : <>Sign in <ArrowUpRight className="w-4 h-4" /></>}
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-[#52525b] mt-7">
+              New to the team?{' '}
+              <Link href="/signup" className="text-[#0a4a1f] font-semibold hover:underline">Request access</Link>
+            </p>
+          </div>
+          <p className="text-center text-xs text-[#a1a1aa] mt-5">Internal tool for the Prosperr sales team.</p>
+        </section>
+      </main>
     </div>
   )
 }

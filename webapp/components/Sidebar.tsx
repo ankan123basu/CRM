@@ -76,20 +76,20 @@ function BadgeLabel({ badge, collapsed }: { badge: Badge; collapsed: boolean }) 
   if (!badge || collapsed) return null
   if (badge.kind === 'beta') {
     return (
-      <span className="rounded-full text-[10px] px-2 py-0.5 bg-[#d7b773] text-[#053f1a] font-semibold leading-none">
+      <span className="rounded-full text-[10px] px-2 py-0.5 bg-[#0a4a1f] text-[#ffffff] font-semibold leading-none">
         Beta
       </span>
     )
   }
   if (badge.kind === 'live') {
     return (
-      <span className="rounded-full text-[10px] px-1.5 py-0.5 bg-[#4ae386] text-[#053f1a] font-medium leading-none">
+      <span className="rounded-full text-[10px] px-1.5 py-0.5 bg-green-50 text-green-700 border border-green-200 font-medium leading-none">
         Live
       </span>
     )
   }
   return (
-    <span className="rounded-full text-[10px] px-2 py-0.5 border border-[#d7b773]/50 text-[#d7b773] font-semibold leading-none">
+    <span className="rounded-full text-[10px] px-2 py-0.5 border border-gray-300 dark:border-gray-700 text-gray-500 font-semibold leading-none">
       Soon
     </span>
   )
@@ -115,8 +115,8 @@ function NavItem({
 
   // Dark forest rail: the active item is a solid white pill, like prosperr.io's CTAs.
   const activeClasses = isActive
-    ? 'bg-[#ffffff] text-[#053f1a] font-semibold shadow-sm'
-    : 'text-[#ffffff]/75 hover:bg-[#ffffff]/10 hover:text-[#ffffff] font-medium'
+    ? 'bg-[#0a4a1f] text-[#ffffff] font-semibold shadow-sm'
+    : 'text-gray-600 dark:text-gray-400 hover:bg-[#f3f3f5] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 font-medium'
 
   const disabledClasses = disabled
     ? 'opacity-60 cursor-not-allowed pointer-events-none'
@@ -167,17 +167,17 @@ function SectionLabel({
   isOpen: boolean
   onToggle: () => void
 }) {
-  if (collapsed) return <div className="h-px bg-[#ffffff]/10 my-2 mx-2" />
+  if (collapsed) return <div className="h-px bg-gray-200 dark:bg-gray-800 my-2 mx-2" />
   return (
     <button
       onClick={onToggle}
       className="flex items-center justify-between w-full px-3 mb-1 mt-4 group"
     >
-      <p className="text-[10px] font-semibold text-[#d7b773] uppercase tracking-[0.14em] group-hover:text-[#ecd6a3] transition-colors">
+      <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.14em] group-hover:text-gray-700 transition-colors">
         {label}
       </p>
       <ChevronDown
-        className={`w-3 h-3 text-[#d7b773]/60 group-hover:text-[#d7b773] transition-all duration-200 ${isOpen ? '' : '-rotate-90'}`}
+        className={`w-3 h-3 text-gray-300 group-hover:text-gray-500 transition-all duration-200 ${isOpen ? '' : '-rotate-90'}`}
       />
     </button>
   )
@@ -214,12 +214,12 @@ function NotificationBell({ collapsed }: { collapsed: boolean }) {
       <button
         onClick={() => setOpen((o) => !o)}
         title="Notifications"
-        className="relative flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-[#ffffff]/75 hover:bg-[#ffffff]/10 hover:text-[#ffffff] w-full transition-colors"
+        className="relative flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[#f3f3f5] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 w-full transition-colors"
       >
         <div className="relative flex-shrink-0">
           <Bell className="w-4 h-4" />
           {unread > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#d7b773] text-[#053f1a] text-[9px] font-bold rounded-full flex items-center justify-center">
+            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#0a4a1f] text-[#ffffff] text-[9px] font-bold rounded-full flex items-center justify-center">
               {unread > 9 ? '9+' : unread}
             </span>
           )}
@@ -283,8 +283,7 @@ function DarkModeToggle({ collapsed }: { collapsed: boolean }) {
 
   useEffect(() => {
     const stored = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const isDark = stored === 'dark' || (!stored && prefersDark)
+    const isDark = stored === 'dark'
     setDark(isDark)
     document.documentElement.classList.toggle('dark', isDark)
   }, [])
@@ -300,7 +299,7 @@ function DarkModeToggle({ collapsed }: { collapsed: boolean }) {
     <button
       onClick={toggle}
       title={dark ? 'Light mode' : 'Dark mode'}
-      className="flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-[#ffffff]/75 hover:bg-[#ffffff]/10 hover:text-[#ffffff] w-full transition-colors"
+      className="flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[#f3f3f5] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 w-full transition-colors"
     >
       <span className="flex-shrink-0">
         {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -342,8 +341,7 @@ export default function Sidebar({
   
   return (
     <aside
-      style={{ background: 'linear-gradient(180deg, #053f1a 0%, #032712 100%)' }}
-      className={`flex flex-col text-[#ffffff] h-screen flex-shrink-0
+      className={`flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 h-screen flex-shrink-0
         fixed inset-y-0 left-0 z-50 transition-transform duration-200
         md:static md:z-auto md:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} ${
         collapsed ? 'w-[260px] md:w-16' : 'w-[260px]'
@@ -351,31 +349,31 @@ export default function Sidebar({
     >
       {/* ── Logo ── */}
       {collapsed ? (
-        <div className="flex flex-col items-center gap-2 px-2 py-4 border-b border-[#ffffff]/10">
-          <ProsperrLogo tone="light" showWordmark={false} size={26} />
+        <div className="flex flex-col items-center gap-2 px-2 py-4 border-b border-gray-200 dark:border-gray-800">
+          <ProsperrLogo showWordmark={false} size={26} />
           <button
             onClick={() => setCollapsed(false)}
-            className="text-[#ffffff]/60 hover:text-[#ffffff] p-1 rounded"
+            className="text-gray-400 hover:text-gray-700 p-1 rounded"
             title="Expand"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       ) : (
-        <div className="flex items-center justify-between px-4 py-4 border-b border-[#ffffff]/10">
+        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-gray-800">
           <Link href="/dashboard" aria-label="Prosperr Sales CRM home">
-            <ProsperrLogo tone="light" size={26} product="Sales CRM" />
+            <ProsperrLogo size={26} product="Sales CRM" />
           </Link>
           <button
             onClick={() => setCollapsed(true)}
-            className="hidden md:block text-[#ffffff]/60 hover:text-[#ffffff] p-1 rounded"
+            className="hidden md:block text-gray-400 hover:text-gray-700 p-1 rounded"
             title="Collapse"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={onClose}
-            className="md:hidden text-[#ffffff]/60 hover:text-[#ffffff] p-1 rounded"
+            className="md:hidden text-gray-400 hover:text-gray-700 p-1 rounded"
             title="Close menu"
           >
             <X className="w-5 h-5" />
@@ -445,7 +443,7 @@ export default function Sidebar({
         </div>
 
         {/* Utility row */}
-        <div className="mt-4 pt-3 border-t border-[#ffffff]/10 space-y-0.5">
+        <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-800 space-y-0.5">
           <NotificationBell collapsed={collapsed} />
           <DarkModeToggle collapsed={collapsed} />
           <NavItem href="/settings/team" label="Team" icon={Users} collapsed={collapsed} />
@@ -458,31 +456,31 @@ export default function Sidebar({
       </nav>
 
       {/* ── Footer ── */}
-      <div className="px-3 py-3 border-t border-[#ffffff]/10">
+      <div className="px-3 py-3 border-t border-gray-200 dark:border-gray-800">
         {userEmail ? (
           collapsed ? (
             <div className="flex justify-center">
-              <div className="w-8 h-8 bg-[#d7b773] rounded-full flex items-center justify-center text-xs font-bold text-[#053f1a]">
+              <div className="w-8 h-8 bg-[#0a4a1f] rounded-full flex items-center justify-center text-xs font-bold text-[#ffffff]">
                 {userInitials}
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2.5 rounded-2xl bg-[#ffffff]/[0.06] px-2.5 py-2">
-              <div className="w-8 h-8 bg-[#d7b773] rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-[#053f1a]">
+            <div className="flex items-center gap-2.5 rounded-2xl bg-[#f3f3f5] dark:bg-gray-900 px-2.5 py-2">
+              <div className="w-8 h-8 bg-[#0a4a1f] rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-[#ffffff]">
                 {userInitials}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-[#ffffff] truncate" title={userName}>
+                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate" title={userName}>
                   {userName}
                 </p>
-                <p className="text-[10px] text-[#ffffff]/55 truncate" title={userEmail}>
+                <p className="text-[10px] text-gray-500 truncate" title={userEmail}>
                   {userEmail}
                 </p>
               </div>
               <button
                 onClick={() => signOut({ callbackUrl: '/login' })}
                 title="Sign out"
-                className="flex-shrink-0 text-[#ffffff]/55 hover:text-[#d7b773] transition-colors p-1 rounded"
+                className="flex-shrink-0 text-gray-400 hover:text-red-600 transition-colors p-1 rounded"
               >
                 <LogOut className="w-3.5 h-3.5" />
               </button>

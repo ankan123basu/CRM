@@ -42,8 +42,8 @@ export default function RootLayout({
       className={`${inter.variable} ${bricolage.variable} h-full antialiased`}
     >
       <head>
-        {/* Dark mode — runs before paint to prevent white flash */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('theme');var dark=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.documentElement.classList.add('dark');}catch(e){}})();` }} />
+        {/* Prosperr is a light brand: dark mode only when the user turns it on. Runs before paint. */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('theme');var dark=t==='dark';if(dark)document.documentElement.classList.add('dark');}catch(e){}})();` }} />
       </head>
       <body className="min-h-full flex flex-col">
         {GA_ID && (

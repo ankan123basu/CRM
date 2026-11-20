@@ -44,8 +44,10 @@ export function ProsperrLogo({
           </span>
           {product && (
             <span
-              className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] whitespace-nowrap"
-              style={{ color: 'var(--prosperr-gold)' }}
+              className={cn(
+                'mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] whitespace-nowrap',
+                tone === 'light' ? 'text-[#d7b773]' : 'text-[#0a4a1f] dark:text-[#4ae386]'
+              )}
             >
               {product}
             </span>
