@@ -33,9 +33,17 @@ describe('POST /api/auth/register', () => {
     expect(json.error).toMatch(/password/i)
   })
 
+  it('returns 400 if the password is shorter than 8 characters', async () => {
+    const res = await register(makeRequest({ email: 'new@example.com', password: 'short' }))
+    expect(res.status).toBe(400)
+    const json = await res.json()
+    expect(json.error).toMatch(/8 characters/i)
+    expect(prisma.user.create).not.toHaveBeenCalled()
+  })
+
   it('returns 409 if email already exists', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(mockUser as any)
-    const res = await register(makeRequest({ email: 'test@example.com', password: 'pass123' }))
+    const res = await register(makeRequest({ email: 'test@example.com', password: 'pass12345' }))
     expect(res.status).toBe(409)
     const json = await res.json()
     expect(json.error).toMatch(/already in use/i)
@@ -44,7 +52,7 @@ describe('POST /api/auth/register', () => {
   it('creates user and returns 200 when email is new', async () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValueOnce(null)
     vi.mocked(prisma.user.create).mockResolvedValueOnce(mockUser as any)
-    const res = await register(makeRequest({ email: 'new@example.com', password: 'pass123', name: 'New User' }))
+    const res = await register(makeRequest({ email: 'new@example.com', password: 'pass12345', name: 'New User' }))
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.email).toBe(mockUser.email)
