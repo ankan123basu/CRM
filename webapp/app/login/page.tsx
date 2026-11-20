@@ -58,14 +58,7 @@ export default function LoginPage() {
       <header className="bg-[#efefef] dark:bg-gray-950 border-b border-[#101312]">
         <div className="max-w-[1240px] mx-auto flex items-center justify-between gap-4 px-4 sm:px-8 h-16 sm:h-[5.5rem]">
           <ProsperrLogo size={32} />
-          <nav className="flex items-center gap-4 sm:gap-8">
-            <a href="https://www.prosperr.io/flexi-benefit-plan" target="_blank" rel="noopener noreferrer" className="hidden sm:inline text-base font-medium text-[#101312] dark:text-gray-200 hover:text-[#053f1a]">
-              For Business
-            </a>
-            <a href="#sign-in" className="inline-flex items-center gap-1.5 rounded-full bg-[#053f1a] text-[#ffffff] px-5 py-2.5 text-sm sm:text-base font-medium hover:bg-[#0a5a26] transition-colors">
-              Sign in <ArrowUpRight className="w-4 h-4" />
-            </a>
-          </nav>
+          <span className="text-xs sm:text-sm font-medium text-[#56645a] dark:text-gray-400">Internal · Sales team</span>
         </div>
       </header>
 
@@ -74,15 +67,15 @@ export default function LoginPage() {
         <Topo seed={5} rings={11} tone="light" />
         <div aria-hidden className="absolute -left-40 -bottom-40 w-[620px] h-[620px] rounded-full opacity-35" style={{ background: 'radial-gradient(circle, #0d5a28 0%, transparent 62%)' }} />
         <div aria-hidden className="absolute right-0 top-0 w-[520px] h-[520px] rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #d7b773 0%, transparent 60%)' }} />
-        <div className="relative max-w-[1240px] mx-auto px-4 sm:px-8 py-14 sm:py-20 grid lg:grid-cols-[1.15fr_1fr] gap-12 items-center">
-          <div className="min-w-0">
-            <h1 className="font-display font-normal text-[2.75rem] sm:text-6xl leading-[1.05] tracking-[-0.04em] text-balance">
+        <div className="relative max-w-[1240px] mx-auto px-4 sm:px-8 py-8 sm:py-20 grid lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-12 items-center">
+          <div className="min-w-0 order-2 lg:order-1">
+            <h1 className="font-display font-normal text-[2.1rem] sm:text-6xl leading-[1.05] tracking-[-0.04em] text-balance">
               A sales CRM for a team that no longer fits a spreadsheet.
             </h1>
             <p className="mt-5 text-lg sm:text-xl text-[#efefef]/80 max-w-xl">
               Accounts, stakeholders and next steps for Prosperr Benefits, managed in one place.
             </p>
-            <div className="mt-8 flex flex-wrap gap-2">
+            <div className="mt-8 hidden sm:flex flex-wrap gap-2">
               {['CFO', 'CHRO', 'Head of Payroll', 'C&B', 'Total Rewards'].map((t) => (
                 <span key={t} className="rounded-full border border-[#ffffff]/25 px-3.5 py-1 text-sm text-[#efefef]/85">{t}</span>
               ))}
@@ -90,9 +83,9 @@ export default function LoginPage() {
           </div>
 
           {/* Sign-in card */}
-          <div id="sign-in" className="w-full max-w-md lg:justify-self-end rounded-[1.75rem] bg-white dark:bg-gray-900 text-[#101312] p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]">
-            <Headline as="h2" className="text-3xl sm:text-4xl" muted="Sign in.">Welcome back.</Headline>
-            <p className="text-sm text-[#56645a] dark:text-gray-400 mt-2 mb-7">Use your Prosperr work account.</p>
+          <div id="sign-in" className="order-1 lg:order-2 w-full max-w-md mx-auto lg:mx-0 lg:justify-self-end rounded-[1.75rem] bg-white dark:bg-gray-900 text-[#101312] p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]">
+            <Headline as="h2" className="text-3xl sm:text-4xl" muted="to Prosperr CRM.">Sign in</Headline>
+            <p className="text-sm text-[#56645a] dark:text-gray-400 mt-2 mb-7">Use your Prosperr work account. First time here? Your manager adds you to the team.</p>
 
             <button
               onClick={() => handleOAuth('google')}
@@ -139,7 +132,7 @@ export default function LoginPage() {
             </form>
 
             <p className="text-center text-sm text-[#56645a] mt-7">
-              New to the team?{' '}
+              No account yet?{' '}
               <Link href="/signup" className="text-[#053f1a] font-medium hover:underline">Request access</Link>
             </p>
           </div>
@@ -158,28 +151,21 @@ export default function LoginPage() {
 
       {/* Dark footer, like prosperr.io */}
       <footer className="mt-auto bg-[#0d0d0d] text-[#efefef]">
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-14 grid md:grid-cols-[1.4fr_1fr_1fr] gap-10">
+        <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-12 sm:py-14 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <p className="font-display font-normal text-3xl sm:text-4xl leading-[1.08] tracking-[-0.035em] max-w-md">
             Your pipeline deserves the highest standards.
           </p>
-          <div>
-            <p className="font-medium">Prosperr</p>
-            <ul className="mt-4 space-y-2.5 text-[#efefef]/65">
-              <li><a href="https://www.prosperr.io/" target="_blank" rel="noopener noreferrer" className="hover:text-[#efefef]">prosperr.io</a></li>
-              <li><a href="https://www.prosperr.io/flexi-benefit-plan" target="_blank" rel="noopener noreferrer" className="hover:text-[#efefef]">Prosperr Benefits</a></li>
-            </ul>
-          </div>
-          <div>
-            <p className="font-medium">Sales CRM</p>
-            <ul className="mt-4 space-y-2.5 text-[#efefef]/65">
-              <li>Prospecting</li>
-              <li>SQL &amp; assignment</li>
-              <li>L1–L3 meetings</li>
-            </ul>
-          </div>
+          <ol className="flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-[#efefef]/65">
+            {['Prospect', 'SQL', 'L1', 'L2', 'L3', 'Won'].map((st, i, all) => (
+              <li key={st} className="flex items-center gap-2">
+                <span className="rounded-full border border-[#ffffff]/20 px-3 py-1">{st}</span>
+                {i < all.length - 1 && <span aria-hidden>→</span>}
+              </li>
+            ))}
+          </ol>
         </div>
         <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-5 border-t border-[#ffffff]/10 text-xs text-[#efefef]/45">
-          Internal tool for the Prosperr sales team. Access is limited to team members.
+          Internal tool for the Prosperr B2B sales team. Access is limited to team members.
         </div>
       </footer>
     </div>

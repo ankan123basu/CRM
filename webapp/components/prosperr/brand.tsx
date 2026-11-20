@@ -131,7 +131,7 @@ export function AnnouncementBar({ children }: { children: React.ReactNode }) {
 /** Uppercase tracked label, as above the stats and "PROSPERR ONE". */
 export function Eyebrow({ children, className, tone = 'dark' }: { children: React.ReactNode; className?: string; tone?: 'dark' | 'light' }) {
   return (
-    <p className={cn('text-xs sm:text-sm font-medium uppercase tracking-[0.12em]', tone === 'dark' ? 'text-[#56645a] dark:text-gray-400' : 'text-[#c4cbc6]', className)}>
+    <p className={cn('text-[10px] sm:text-sm font-medium uppercase tracking-[0.12em]', tone === 'dark' ? 'text-[#56645a] dark:text-gray-400' : 'text-[#c4cbc6]', className)}>
       {children}
     </p>
   )
@@ -143,19 +143,19 @@ export function Eyebrow({ children, className, tone = 'dark' }: { children: Reac
  */
 export function StatsGrid({ items }: { items: { label: string; value: React.ReactNode; accent?: boolean; href?: string; tone?: 'bad' | 'warn' }[] }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#d4d8d3] dark:bg-gray-800 border-y border-[#d4d8d3] dark:border-gray-800">
+    <div className="grid grid-cols-2 gap-px bg-[#d4d8d3] dark:bg-gray-800 border-y border-[#d4d8d3] dark:border-gray-800">
       {items.map((it) => {
         const inner = (
           <>
             <Eyebrow>{it.label}</Eyebrow>
             <p className={cn('mt-3 font-display font-medium tracking-[-0.03em] leading-none tabular-nums',
-              typeof it.value === 'number' ? (it.accent ? 'text-5xl md:text-6xl' : 'text-4xl md:text-5xl') : (it.accent ? 'text-3xl md:text-[2.75rem]' : 'text-3xl md:text-4xl'),
+              typeof it.value === 'number' ? (it.accent ? 'text-4xl sm:text-5xl md:text-6xl' : 'text-3xl sm:text-4xl md:text-5xl') : 'text-xl sm:text-3xl md:text-[2.5rem]',
               it.tone === 'bad' ? 'text-red-700' : it.tone === 'warn' ? 'text-amber-700' : it.accent ? 'text-[#053f1a] dark:text-[#4ae386]' : 'text-[#101312] dark:text-white')}>
               {it.value}
             </p>
           </>
         )
-        const cls = 'bg-[#efefef] dark:bg-gray-950 px-6 py-10 md:py-12 text-center flex flex-col items-center justify-center'
+        const cls = 'bg-[#efefef] dark:bg-gray-950 px-3 sm:px-6 py-7 sm:py-10 md:py-12 text-center flex flex-col items-center justify-center'
         return it.href
           ? <Link key={it.label} href={it.href} className={cn(cls, 'hover:bg-[#e6e8e5] transition-colors')}>{inner}</Link>
           : <div key={it.label} className={cls}>{inner}</div>

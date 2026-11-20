@@ -131,7 +131,7 @@ function AccountDetail() {
         </div>
       )}
 
-      <div className="grid xl:grid-cols-[1fr_380px] gap-6 items-start">
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_380px] gap-6 items-start">
         <div className="space-y-6 min-w-0">
           <AccountXRay stakeholders={stakeholders} />
 
@@ -155,7 +155,7 @@ function AccountDetail() {
                 return (
                   <div key={d}>
                     <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-[#053f1a] mb-2">{DEPARTMENT_LABEL[d]} · {list.length}</h3>
-                    <div className="grid md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {list.map((s: Any) => <StakeholderCard key={s.id} s={s} />)}
                     </div>
                   </div>
@@ -191,7 +191,7 @@ function AccountDetail() {
         </div>
 
         {/* ── Right rail ── */}
-        <aside className="space-y-6">
+        <aside className="space-y-6 min-w-0">
           <section className="bg-white dark:bg-gray-900 rounded-[1.75rem] border border-[#e6e6e8] dark:border-gray-700 p-6">
             <h2 className="font-display text-xl font-semibold tracking-[-0.02em] text-[#0d0d0d] dark:text-white">Open tasks</h2>
             <ul className="mt-3 space-y-2">
@@ -364,7 +364,7 @@ function StakeholderCard({ s }: { s: Any }) {
   }
   const phones = (s.phones ?? []) as { number: string; invalid: boolean }[]
   return (
-    <div className="rounded-[1.5rem] border border-[#e6e6e8] dark:border-gray-700 p-4">
+    <div className="rounded-[1.5rem] border border-[#e6e6e8] dark:border-gray-700 p-4 min-w-0">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="font-semibold text-gray-900 dark:text-white flex items-center gap-1.5">

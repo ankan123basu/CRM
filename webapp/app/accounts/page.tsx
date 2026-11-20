@@ -169,7 +169,12 @@ export default function AccountsPage() {
             <p className="text-xs text-gray-500 mt-1">Clear a filter, or add a new account.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          {/* Phone: one card per account (BDRs work from their phones) */}
+          <ul className="md:hidden divide-y divide-gray-100 dark:divide-gray-800">
+            {rows.map((r) => <AccountCard key={r.id} r={r} />)}
+          </ul>
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm min-w-[980px]">
               <thead>
                 <tr className="text-left border-b border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-900">
@@ -185,6 +190,7 @@ export default function AccountsPage() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
 
@@ -249,6 +255,36 @@ function AccountRowView({ r }: { r: AccountRow }) {
         )}
       </td>
     </tr>
+  )
+}
+
+function AccountCard({ r }: { r: AccountRow }) {
+  const inactive = r.status === 'INACTIVE'
+  const overdue = !inactive && isOverdue(r.nextStepAt)
+  return (
+    <li>
+      <Link href={`/accounts/${r.id}`} className="block px-4 py-4 active:bg-gray-50 dark:active:bg-gray-800">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-semibold text-[#101312] dark:text-white truncate">{r.name}</p>
+            <p className="text-xs text-gray-500 mt-0.5 truncate">
+              {r.city ?? '—'}{r.cityTier !== 'OUT' ? ` · ${r.cityTier}` : ''}{r.sizeBucket ? ` · ${r.sizeBucket[0]}${r.sizeBucket.slice(1).toLowerCase()} (${r.licensePotential?.toLocaleString('en-IN')})` : ''}
+            </p>
+          </div>
+          <StageChip stage={r.stage} inactive={inactive} />
+        </div>
+        <div className="mt-2.5 flex items-center justify-between gap-3 text-xs">
+          <span className="text-gray-500 truncate">{r.ae?.name ? `AE · ${r.ae.name}` : `BDR · ${r.bdrs.map((b) => b.name).join(', ') || '—'}`}</span>
+          {inactive ? (
+            <span className="text-gray-500 flex-shrink-0">Revisit {r.revisitAt ? relativeDay(r.revisitAt) : '—'}</span>
+          ) : r.nextStepAt ? (
+            <span className={cn('font-semibold flex-shrink-0', overdue ? 'text-red-600' : 'text-gray-600')}>{overdue ? 'Overdue · ' : 'Next · '}{relativeDay(r.nextStepAt)}</span>
+          ) : (
+            <span className="font-semibold text-amber-700 flex-shrink-0">No next step</span>
+          )}
+        </div>
+      </Link>
+    </li>
   )
 }
 
