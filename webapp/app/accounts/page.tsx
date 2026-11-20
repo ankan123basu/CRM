@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Plus, Search, Loader2, X, AlertTriangle, Building2 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { STAGES, STAGE_LABEL, SIZE_BUCKETS, CITIES, formatDateIST, INR, type Stage } from '@/lib/prosperr/constants'
@@ -51,6 +51,7 @@ export default function AccountsPage() {
   const [city, setCity] = useState('')
   const [mine, setMine] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
+
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -194,9 +195,23 @@ export default function AccountsPage() {
         )}
       </div>
 
+      {/* The top bar's "Add account" pill links here with ?new=1. */}
+      <Suspense fallback={null}><OpenAddFromQuery onOpen={() => setShowAdd(true)} /></Suspense>
       {showAdd && <AddAccountModal onClose={() => setShowAdd(false)} />}
     </div>
   )
+}
+
+function OpenAddFromQuery({ onOpen }: { onOpen: () => void }) {
+  const params = useSearchParams()
+  const router = useRouter()
+  const wantsNew = params.get('new') === '1'
+  useEffect(() => {
+    if (!wantsNew) return
+    onOpen()
+    router.replace('/accounts', { scroll: false })
+  }, [wantsNew, onOpen, router])
+  return null
 }
 
 function AccountRowView({ r }: { r: AccountRow }) {

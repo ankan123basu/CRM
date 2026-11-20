@@ -4,8 +4,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { Loader2, ArrowUpRight } from 'lucide-react'
-import { Headline, Sparkle, Topo, AnnouncementBar, StatsGrid } from '@/components/prosperr/brand'
+import { Loader2, ArrowUpRight, PhoneCall, Handshake, BarChart3, ShieldCheck } from 'lucide-react'
+import { Headline, Sparkle, Topo, AnnouncementBar, StatsGrid, IconPanel, Tag } from '@/components/prosperr/brand'
+import { Seal } from '@/components/prosperr/Seal'
 import { ProsperrLogo } from '@/components/ProsperrLogo'
 
 function GoogleIcon() {
@@ -27,6 +28,10 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [oauthLoading, setOauthLoading] = useState<string | null>(null)
+
+  // Time-of-day greeting in IST, so the card feels personal on first and later visits.
+  const hourIST = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }).format(new Date()))
+  const greeting = hourIST < 12 ? 'Good morning' : hourIST < 17 ? 'Good afternoon' : 'Good evening'
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -54,11 +59,23 @@ export default function LoginPage() {
         </span>
       </AnnouncementBar>
 
-      {/* Header, as on prosperr.io */}
-      <header className="bg-[#efefef] dark:bg-gray-950 border-b border-[#101312]">
+      {/* Header, as on prosperr.io: logo, quiet nav, one green pill. Sticks while scrolling. */}
+      <header className="sticky top-0 z-30 bg-[#efefef]/95 dark:bg-gray-950/95 backdrop-blur border-b border-[#101312]">
         <div className="max-w-[1240px] mx-auto flex items-center justify-between gap-4 px-4 sm:px-8 h-16 sm:h-[5.5rem]">
-          <ProsperrLogo size={32} />
-          <span className="text-xs sm:text-sm font-medium text-[#56645a] dark:text-gray-400">Internal · Sales team</span>
+          <Link href="/login" aria-label="Prosperr Sales CRM" className="flex items-center gap-3">
+            <ProsperrLogo size={32} />
+            <span className="hidden sm:inline-flex items-center rounded-full border border-[#101312]/15 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[#56645a]">Sales CRM</span>
+          </Link>
+          <nav className="flex items-center gap-2 sm:gap-8">
+            {[['#workflow', 'Workflow'], ['#roles', 'Who it’s for'], ['#help', 'Help']].map(([href, label]) => (
+              <a key={href} href={href} className="hidden md:inline text-base font-medium text-[#101312] dark:text-gray-200 hover:text-[#053f1a] transition-colors">
+                {label}
+              </a>
+            ))}
+            <a href="#sign-in" className="inline-flex items-center gap-1.5 rounded-full bg-[#053f1a] text-[#ffffff] px-5 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base font-medium hover:bg-[#0a5a26] transition-colors">
+              Sign in <ArrowUpRight className="w-4 h-4" />
+            </a>
+          </nav>
         </div>
       </header>
 
@@ -83,9 +100,12 @@ export default function LoginPage() {
           </div>
 
           {/* Sign-in card */}
-          <div id="sign-in" className="order-1 lg:order-2 w-full max-w-md mx-auto lg:mx-0 lg:justify-self-end rounded-[1.75rem] bg-white dark:bg-gray-900 text-[#101312] p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]">
-            <Headline as="h2" className="text-3xl sm:text-4xl" muted="to Prosperr CRM.">Sign in</Headline>
-            <p className="text-sm text-[#56645a] dark:text-gray-400 mt-2 mb-7">Use your Prosperr work account. First time here? Your manager adds you to the team.</p>
+          <div id="sign-in" className="scroll-mt-28 order-1 lg:order-2 w-full max-w-md mx-auto lg:mx-0 lg:justify-self-end rounded-[1.75rem] bg-white dark:bg-gray-900 text-[#101312] p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]">
+            <p suppressHydrationWarning className="inline-flex items-center gap-1.5 rounded-full bg-[#eef7f0] text-[#053f1a] px-3 py-1 text-xs font-medium">
+              <Sparkle className="w-3 h-3" /> {greeting}
+            </p>
+            <Headline as="h2" className="mt-3 text-3xl sm:text-4xl" muted="to Prosperr CRM.">Welcome</Headline>
+            <p className="text-sm text-[#56645a] dark:text-gray-400 mt-2 mb-7">Sign in with your Prosperr work account. First time here? Use the e-mail your manager added you with.</p>
 
             <button
               onClick={() => handleOAuth('google')}
@@ -140,7 +160,7 @@ export default function LoginPage() {
       </section>
 
       {/* Lined grid, like prosperr.io's stats block */}
-      <section className="max-w-[1240px] w-full mx-auto sm:border-x border-[#d4d8d3] dark:border-gray-800">
+      <section id="workflow" className="scroll-mt-24 max-w-[1240px] w-full mx-auto sm:border-x border-[#d4d8d3] dark:border-gray-800">
         <StatsGrid items={[
           { label: 'Prospecting', value: 'Calls & sequences', accent: true },
           { label: 'Qualification', value: 'ICP & BANT', accent: true },
@@ -149,23 +169,92 @@ export default function LoginPage() {
         ]} />
       </section>
 
-      {/* Dark footer, like prosperr.io */}
-      <footer className="mt-auto bg-[#0d0d0d] text-[#efefef]">
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-12 sm:py-14 flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <p className="font-display font-normal text-3xl sm:text-4xl leading-[1.08] tracking-[-0.035em] max-w-md">
-            Your pipeline deserves the highest standards.
-          </p>
-          <ol className="flex flex-wrap items-center gap-x-2 gap-y-2 text-sm text-[#efefef]/65">
-            {['Prospect', 'SQL', 'L1', 'L2', 'L3', 'Won'].map((st, i, all) => (
-              <li key={st} className="flex items-center gap-2">
-                <span className="rounded-full border border-[#ffffff]/20 px-3 py-1">{st}</span>
-                {i < all.length - 1 && <span aria-hidden>→</span>}
-              </li>
-            ))}
-          </ol>
+      {/* Roles, in the Tax / Wealth / Credit card style */}
+      <section id="roles" className="scroll-mt-24 max-w-[1240px] w-full mx-auto px-4 sm:px-8 py-16 sm:py-24">
+        <Headline as="h2" className="text-[2rem] sm:text-5xl text-center max-w-3xl mx-auto" muted="for every seat on the team.">
+          One CRM,
+        </Headline>
+        <div className="mt-10 sm:mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { icon: PhoneCall, title: 'BDRs', body: 'A daily call queue, two-click outcomes and follow-ups that schedule themselves.', tags: ['My Day', 'Calls', 'Sequences'] },
+            { icon: Handshake, title: 'Account Executives', body: 'Every L1, L2 and L3 with its checklist, stakeholders and next step.', tags: ['Meetings', 'Multithreading'] },
+            { icon: BarChart3, title: 'Sales Managers', body: 'SQL approvals, AE assignment by capacity, targets and the leak report.', tags: ['SQL queue', 'Targets'] },
+            { icon: ShieldCheck, title: 'Admins', body: 'Designation map, ICP rules, picklists and who can edit what.', tags: ['Settings', 'Audit'] },
+          ].map(({ icon: Icon, title, body, tags }, i) => (
+            <div key={title} className="rounded-[1.75rem] bg-white dark:bg-gray-900 p-2.5 flex flex-col">
+              <IconPanel seed={i * 2 + 3} className="h-36">
+                <Icon className="w-14 h-14" strokeWidth={2.3} />
+              </IconPanel>
+              <div className="px-3 pt-5 pb-3 flex-1 flex flex-col">
+                <p className="font-display text-2xl font-normal tracking-[-0.02em] text-[#101312] dark:text-white">{title}</p>
+                <p className="mt-2 text-sm text-[#56645a] dark:text-gray-400 flex-1">{body}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {tags.map((t) => <Tag key={t}>{t}</Tag>)}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-5 border-t border-[#ffffff]/10 text-xs text-[#efefef]/45">
-          Internal tool for the Prosperr B2B sales team. Access is limited to team members.
+
+        {/* Green banner, like prosperr.io's "One subscription that handles all of this." */}
+        <div className="mt-10 rounded-[1.75rem] bg-[#053f1a] text-[#ffffff] px-6 sm:px-10 py-7 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <p className="flex items-start gap-3 font-display text-2xl sm:text-3xl font-normal tracking-[-0.03em] leading-tight">
+            <Sparkle className="w-6 h-6 mt-1 flex-shrink-0" />
+            One place for every account, from first call to signed FBP.
+          </p>
+          <a href="#sign-in" className="inline-flex items-center gap-2 self-start md:self-auto whitespace-nowrap rounded-full bg-[#ffffff] text-[#053f1a] px-6 py-3 text-base font-medium hover:bg-[#efefef] transition-colors">
+            Sign in <ArrowUpRight className="w-4 h-4" />
+          </a>
+        </div>
+      </section>
+
+      {/* Dark footer, like prosperr.io: headline + seals, link columns, contact row */}
+      <footer id="help" className="mt-auto bg-[#0d0d0d] text-[#efefef]">
+        <div className="max-w-[1240px] mx-auto px-4 sm:px-8 pt-16 sm:pt-20 pb-10">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-10">
+            <p className="font-display font-normal text-[2.1rem] sm:text-5xl leading-[1.06] tracking-[-0.04em] max-w-xl">
+              Your pipeline deserves the highest standards.
+            </p>
+            <div className="flex items-center gap-4">
+              <Seal ring="Role-based access" center="RBAC" sub="BDR · AE · MGR" />
+              <Seal ring="Every change logged" center="AUDIT" sub="Full history" />
+            </div>
+          </div>
+
+          <div className="mt-14 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+            {[
+              { title: 'Workflow', items: ['Prospecting', 'SQL qualification', 'AE assignment', 'L1–L3 meetings', 'Revival'] },
+              { title: 'Built for', items: ['BDRs', 'Account Executives', 'Sales Managers', 'Admins'] },
+              { title: 'Standards', items: ['Owner on every account', 'Dated next step', 'Reason on every move', 'IST · ₹ · DD Mon YYYY'] },
+            ].map((col) => (
+              <div key={col.title}>
+                <p className="text-lg font-medium">{col.title}</p>
+                <ul className="mt-5 space-y-3 text-[#efefef]/60">
+                  {col.items.map((it) => <li key={it}>{it}</li>)}
+                </ul>
+              </div>
+            ))}
+            <div>
+              <p className="text-lg font-medium">Help</p>
+              <ul className="mt-5 space-y-3 text-[#efefef]/60">
+                <li><Link href="/forgot-password" className="hover:text-[#efefef] transition-colors">Reset your password</Link></li>
+                <li><Link href="/signup" className="hover:text-[#efefef] transition-colors">Request access</Link></li>
+                <li><a href="#sign-in" className="hover:text-[#efefef] transition-colors">Sign in</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <p className="mt-14 text-[#efefef]/80">
+            <span className="font-medium text-[#efefef]">Need access?</span> Ask your sales manager to add you to the team
+            <span className="text-[#efefef]/40"> · </span>
+            <Link href="/forgot-password" className="hover:text-[#efefef]">Forgot password</Link>
+          </p>
+        </div>
+        <div className="border-t border-[#ffffff]/10">
+          <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-6 flex flex-col sm:flex-row justify-between gap-2 text-xs text-[#efefef]/45">
+            <span>© {new Date().getFullYear()} Prosperr · Sales CRM</span>
+            <span>Internal tool for the Prosperr B2B sales team. Access is limited to team members.</span>
+          </div>
         </div>
       </footer>
     </div>

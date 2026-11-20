@@ -1,19 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { Bug, Menu } from 'lucide-react'
+import { Menu, Plus, Bug } from 'lucide-react'
+import { cn } from '@/lib/cn'
 import RoleSwitcher from '@/components/prosperr/RoleSwitcher'
 import { ProsperrLogo } from '@/components/ProsperrLogo'
 
-interface Tab {
-  label: string
-  href: string
-  disabled?: boolean
-  showBadge?: boolean
-}
-
-const TABS: Tab[] = [
+// prosperr.io-style navigation: quiet text links, the current page marked with a
+// green underline, and a single green pill CTA on the right.
+const TABS = [
   { label: 'Accounts', href: '/accounts' },
   { label: 'Pipeline', href: '/pipeline' },
   { label: 'Meetings', href: '/bookings' },
@@ -33,81 +28,61 @@ interface TopBarProps {
 }
 
 export default function TopBar({ activePath, onMenuClick }: TopBarProps) {
-  const [hotLeadsCount, setHotLeadsCount] = useState<number>(0)
-
-  useEffect(() => {
-    fetch('/api/dashboard/stats')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data?.hotLeadsCount != null) {
-          setHotLeadsCount(data.hotLeadsCount)
-        }
-      })
-      .catch(() => {})
-  }, [])
-
   return (
-    <header className="h-14 flex items-center gap-2 border-b border-[#101312]/80 dark:border-gray-800 bg-[#efefef] dark:bg-gray-950 backdrop-blur px-2 sm:px-5 flex-shrink-0 sticky top-0 z-20">
+    <header className="h-16 flex items-center gap-2 sm:gap-3 border-b border-[#101312]/80 dark:border-gray-800 bg-[#efefef] dark:bg-gray-950 px-2 sm:px-6 flex-shrink-0 sticky top-0 z-20">
       <button
         onClick={onMenuClick}
-        className="md:hidden flex-shrink-0 p-2 -ml-1 mr-1 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="md:hidden flex-shrink-0 p-2 -ml-1 rounded-full text-[#101312] dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 transition-colors"
         title="Open menu"
         aria-label="Open menu"
       >
         <Menu className="w-5 h-5" />
       </button>
       <Link href="/dashboard" className="md:hidden flex-1 min-w-0" aria-label="Home">
-        <ProsperrLogo size={22} />
+        <ProsperrLogo size={24} />
       </Link>
-      <nav className="hidden md:flex items-center gap-1 flex-1 min-w-0 overflow-x-auto no-scrollbar">
+
+      <nav className="hidden md:flex items-center gap-7 flex-1 min-w-0 overflow-x-auto no-scrollbar h-full">
         {TABS.map((tab) => {
-          const isActive = activePath === tab.href || activePath.startsWith(tab.href + '/')
-          const count = tab.showBadge ? hotLeadsCount : 0
-
-          if (tab.disabled) {
-            return (
-              <span
-                key={tab.href}
-                className="relative flex flex-shrink-0 whitespace-nowrap items-center gap-1.5 px-3 h-9 text-sm font-medium text-gray-400 dark:text-gray-600 cursor-not-allowed select-none"
-              >
-                {tab.label}
-              </span>
-            )
-          }
-
+          const active = activePath === tab.href || activePath.startsWith(tab.href + '/')
           return (
             <Link
               key={tab.href}
               href={tab.href}
-              className={`relative flex flex-shrink-0 whitespace-nowrap items-center gap-1.5 px-4 h-9 rounded-full text-sm font-semibold transition-colors ${
-                isActive
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-900'
-              }`}
+              aria-current={active ? 'page' : undefined}
+              className={cn(
+                'relative h-full flex items-center whitespace-nowrap text-[15px] font-medium transition-colors',
+                active ? 'text-[#053f1a] dark:text-[#4ae386]' : 'text-[#101312] dark:text-gray-300 hover:text-[#053f1a]'
+              )}
             >
               {tab.label}
-              {tab.showBadge && count > 0 && (
-                <span className="ml-0.5 min-w-[18px] h-[18px] inline-flex items-center justify-center rounded-full bg-blue-600 dark:bg-blue-500 text-white text-[10px] font-bold px-1">
-                  {count > 99 ? '99+' : count}
-                </span>
-              )}
+              {active && <span className="absolute left-0 right-0 -bottom-px h-[3px] rounded-full bg-[#053f1a] dark:bg-[#4ae386]" />}
             </Link>
           )
         })}
       </nav>
 
-      <RoleSwitcher />
-
-      <span className="hidden lg:inline text-xs font-medium text-gray-500 dark:text-gray-400 tabular-nums whitespace-nowrap px-2">
+      <span suppressHydrationWarning className="hidden xl:inline text-sm text-[#56645a] dark:text-gray-400 tabular-nums whitespace-nowrap">
         {todayIST()} · IST
       </span>
 
+      <RoleSwitcher />
+
       <Link
         href="/report-issue"
-        className="flex flex-shrink-0 items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700"
+        title="Report an issue"
+        aria-label="Report an issue"
+        className="hidden sm:flex flex-shrink-0 items-center justify-center w-10 h-10 rounded-full text-[#101312] dark:text-gray-300 border border-[#101312]/15 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-colors"
       >
-        <Bug className="w-3.5 h-3.5 flex-shrink-0" />
-        <span className="hidden sm:inline">Report issue</span>
+        <Bug className="w-4 h-4" />
+      </Link>
+
+      <Link
+        href="/accounts?new=1"
+        className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-full bg-[#053f1a] text-[#ffffff] px-3 sm:px-5 h-10 text-sm font-medium hover:bg-[#0a5a26] transition-colors"
+      >
+        <Plus className="w-4 h-4" />
+        <span className="hidden sm:inline">Add account</span>
       </Link>
     </header>
   )
