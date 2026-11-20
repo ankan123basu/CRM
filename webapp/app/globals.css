@@ -304,3 +304,31 @@ button, a, [role="button"] {
 .dark :is(.dark\:bg-gray-600, .dark\:bg-gray-700, .dark\:bg-gray-800, .dark\:bg-gray-900):is(.dark\:text-white, .dark\:text-gray-50, .dark\:text-gray-100, .dark\:text-gray-200) { color: #1e293b; }
 .dark :is(.dark\:bg-gray-600, .dark\:bg-gray-700, .dark\:bg-gray-800, .dark\:bg-gray-900) .dark\:text-gray-300,
 .dark :is(.dark\:bg-gray-600, .dark\:bg-gray-700, .dark\:bg-gray-800, .dark\:bg-gray-900).dark\:text-gray-300 { color: #475569; }
+
+/* ── Prosperr gradient wordmark text ──────────────────────────────────────────
+   prosperr.io's business page writes "Prosperr Benefits" in a green → blue
+   gradient. Same treatment for "Prosperr CRM", with a slow sheen. */
+.text-prosperr-gradient {
+  background-image: linear-gradient(90deg, #053f1a 0%, #0f8a3c 40%, #0b78a8 75%, #053f1a 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: prosperr-sheen 7s ease-in-out infinite alternate;
+}
+@keyframes prosperr-sheen {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+/* Gentle entrance for auth cards. */
+.prosperr-rise { animation: prosperr-rise 0.6s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes prosperr-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-prosperr-gradient { animation: none; background-position: 30% 50%; }
+  .prosperr-rise { animation: none; }
+}

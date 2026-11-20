@@ -52,7 +52,9 @@ export default function LoginPage() {
             <p suppressHydrationWarning className="inline-flex items-center gap-1.5 rounded-full bg-[#eef7f0] text-[#053f1a] px-3 py-1 text-xs font-medium">
               <Sparkle className="w-3 h-3" /> {greeting}
             </p>
-            <Headline as="h2" className="mt-3 text-3xl sm:text-4xl" muted="to Prosperr CRM.">Welcome</Headline>
+            <Headline as="h2" className="mt-3 text-3xl sm:text-[2.6rem]">
+              Welcome to <span className="block text-prosperr-gradient font-semibold pb-1">Prosperr CRM.</span>
+            </Headline>
             <p className="text-sm text-[#56645a] dark:text-gray-400 mt-2 mb-7">Sign in with your Prosperr work account. First time here? Use the e-mail your manager added you with.</p>
 
             <button

@@ -65,7 +65,9 @@ export default function SignupPage() {
       <p className="inline-flex items-center gap-1.5 rounded-full bg-[#eef7f0] text-[#053f1a] px-3 py-1 text-xs font-medium">
         <Sparkle className="w-3 h-3" /> New to the team
       </p>
-      <Headline as="h2" className="mt-3 text-3xl sm:text-4xl" muted="your account.">Create</Headline>
+      <Headline as="h2" className="mt-3 text-3xl sm:text-[2.6rem]">
+        Join <span className="block text-prosperr-gradient font-semibold pb-1">Prosperr CRM.</span>
+      </Headline>
       <p className="text-sm text-[#56645a] dark:text-gray-400 mt-2 mb-7">Use your Prosperr work e-mail. Your manager sets your role after you join.</p>
 
       <button

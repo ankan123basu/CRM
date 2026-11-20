@@ -102,7 +102,7 @@ export function AuthShell({
           </div>
 
           {/* Sign-in card */}
-          <div id="card" className="scroll-mt-28 order-1 lg:order-2 w-full max-w-md mx-auto lg:mx-0 lg:justify-self-end rounded-[1.75rem] bg-white dark:bg-gray-900 text-[#101312] p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]">
+          <div id="card" className="prosperr-rise scroll-mt-28 order-1 lg:order-2 w-full max-w-md mx-auto lg:mx-0 lg:justify-self-end rounded-[1.75rem] bg-white dark:bg-gray-900 text-[#101312] p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]">
             {children}
           </div>
         </div>
