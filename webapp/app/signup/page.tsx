@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Loader2 } from 'lucide-react'
+import { ProsperrLogo } from '@/components/ProsperrLogo'
 
 function GoogleIcon() {
   return (
@@ -74,18 +75,13 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[#f3f3f5] dark:bg-gray-950 flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#0A66C2' }}>
-            <span className="text-white font-black text-sm leading-none" style={{ fontFamily: 'Georgia, serif' }}>in</span>
-          </div>
-          <span className="text-xl font-extrabold text-gray-900 tracking-tight">
-            OutReachAI<span style={{ color: '#0A66C2' }}>.in</span>
-          </span>
+          <ProsperrLogo size={30} product="Sales CRM" />
         </div>
 
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm p-8">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm p-8">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Create your account</h1>
           <p className="text-sm text-gray-500 mb-6">Free during beta — no credit card needed.</p>
 
@@ -141,7 +137,7 @@ export default function SignupPage() {
             )}
 
             <button type="submit" disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3 rounded-lg transition-colors text-sm">
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3 rounded-full transition-colors text-sm">
               {loading ? 'Creating account…' : 'Create account'}
             </button>
           </form>

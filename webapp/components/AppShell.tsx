@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import TopBar from '@/components/TopBar'
-import NavTour from '@/components/NavTour'
 import MobileBottomNav from '@/components/MobileBottomNav'
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -19,7 +18,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-dvh w-screen overflow-hidden flex bg-gray-50 dark:bg-gray-950">
       <Sidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
-      <NavTour />
 
       {/* Mobile backdrop */}
       {mobileNavOpen && (

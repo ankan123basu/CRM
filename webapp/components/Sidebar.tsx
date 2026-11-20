@@ -4,14 +4,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { useState, useEffect, useRef } from 'react'
+import { ProsperrLogo } from '@/components/ProsperrLogo'
 import {
   ChevronLeft, ChevronRight, ChevronDown, X,
   Bell, Moon, Sun, ExternalLink,
-  Home, Bot, Users, User,
-  Megaphone, CheckSquare, Inbox, CalendarDays, Calendar,
+  Home, Users, User,
+  CheckSquare, Inbox, CalendarDays, Calendar,
   BarChart2, Shield, Flame, Activity,
-  Settings, LogOut, Download, UserSearch, Bug, Newspaper, ShieldCheck,
-  TrendingUp, Zap, Building2, GitBranch, Phone, ListChecks,
+  Settings, LogOut, ShieldCheck,
+  TrendingUp, Building2, GitBranch, Phone, ListChecks,
 } from 'lucide-react'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -37,47 +38,36 @@ interface NavItemDef {
   exact?: boolean
 }
 
-// ── Nav structure ─────────────────────────────────────────────────────────────
+// ── Nav structure (Prosperr Sales CRM) ────────────────────────────────────────
 const NAV_TOP: NavItemDef[] = [
   { href: '/dashboard', label: 'Home', icon: Home },
-  { href: '/agent', label: 'OutReach Agent', icon: Bot, badge: { kind: 'beta' } },
 ]
 
-const NAV_FIND: NavItemDef[] = [
-  { href: '/contacts', label: 'Contacts', icon: User },
-  { href: '/leads', label: 'Lead Lists', icon: Users },
-  { href: '/companies', label: 'Companies', icon: Building2 },
-  { href: '/pipeline', label: 'CRM Pipeline', icon: TrendingUp },
-  { href: '/hot-leads', label: 'Hot Leads', icon: Flame },
-]
-
-const NAV_ENGAGE: NavItemDef[] = [
-  { href: '/campaigns', label: 'Campaigns', icon: Megaphone },
-  { href: '/sequences', label: 'Sequences', icon: GitBranch },
-  { href: '/inbox', label: 'Inbox', icon: Inbox },
-  { href: '/outreach-queue', label: 'Outreach Queue', icon: ListChecks },
+const NAV_PROSPECT: NavItemDef[] = [
+  { href: '/companies', label: 'Accounts', icon: Building2 },
+  { href: '/contacts', label: 'Stakeholders', icon: User },
+  { href: '/calls', label: 'Calls', icon: Phone },
+  { href: '/sequences', label: 'Email Sequences', icon: GitBranch },
   { href: '/tasks', label: 'Tasks', icon: CheckSquare },
-  { href: '/workflows', label: 'Workflows', icon: Zap },
-  { href: '/bookings', label: 'Bookings', icon: Calendar },
+  { href: '/inbox', label: 'Inbox', icon: Inbox },
 ]
 
-const NAV_GROW: NavItemDef[] = [
-  { href: '/marketing', label: 'Marketing', icon: Megaphone },
-  { href: '/warmup', label: 'Email Warmup', icon: Flame },
-  { href: '/captured-posts', label: 'Captured Posts', icon: Newspaper },
+const NAV_PIPELINE: NavItemDef[] = [
+  { href: '/pipeline', label: 'Pipeline', icon: TrendingUp },
+  { href: '/bookings', label: 'Meetings', icon: Calendar },
 ]
 
-const NAV_ANALYZE: NavItemDef[] = [
-  { href: '/analytics', label: 'Reports', icon: BarChart2 },
+const NAV_INSIGHTS: NavItemDef[] = [
   { href: '/dashboards', label: 'Dashboards', icon: BarChart2 },
-  { href: '/insights', label: 'Insights', icon: Activity },
-  { href: '/deliverability', label: 'Deliverability', icon: Shield },
+  { href: '/analytics', label: 'Reports', icon: Activity },
 ]
 
+// Hackathon roadmap — each lane ships one of these (see team plan).
 const NAV_COMING_SOON: NavItemDef[] = [
-  { href: '/signals', label: 'Signal Agents', icon: Zap, badge: { kind: 'soon' }, disabled: true },
-  { href: '/calls', label: 'Calls (VOIP)', icon: Phone, badge: { kind: 'soon' }, disabled: true },
-  { href: '/enrichment', label: 'Lead Finder', icon: UserSearch, badge: { kind: 'soon' }, disabled: true },
+  { href: '/my-day', label: 'My Day', icon: CalendarDays, badge: { kind: 'soon' }, disabled: true },
+  { href: '/sql', label: 'SQL Queue', icon: ListChecks, badge: { kind: 'soon' }, disabled: true },
+  { href: '/inactive', label: 'Inactive & Revival', icon: Flame, badge: { kind: 'soon' }, disabled: true },
+  { href: '/targets', label: 'Targets', icon: Shield, badge: { kind: 'soon' }, disabled: true },
 ]
 
 // ── Small sub-components ──────────────────────────────────────────────────────
@@ -86,20 +76,20 @@ function BadgeLabel({ badge, collapsed }: { badge: Badge; collapsed: boolean }) 
   if (!badge || collapsed) return null
   if (badge.kind === 'beta') {
     return (
-      <span className="rounded-full text-[10px] px-2 py-0.5 bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 font-semibold leading-none border border-blue-200 dark:border-blue-800/40">
+      <span className="rounded-full text-[10px] px-2 py-0.5 bg-[#d7b773] text-[#053f1a] font-semibold leading-none">
         Beta
       </span>
     )
   }
   if (badge.kind === 'live') {
     return (
-      <span className="rounded-full text-[10px] px-1.5 py-0.5 bg-emerald-50 text-emerald-700 font-medium leading-none border border-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 dark:border-emerald-600">
+      <span className="rounded-full text-[10px] px-1.5 py-0.5 bg-[#4ae386] text-[#053f1a] font-medium leading-none">
         Live
       </span>
     )
   }
   return (
-    <span className="rounded-full text-[10px] px-2 py-0.5 bg-gray-100 text-gray-500 dark:bg-gray-800/50 dark:text-gray-400 font-semibold leading-none border border-gray-200 dark:border-gray-700/40">
+    <span className="rounded-full text-[10px] px-2 py-0.5 border border-[#d7b773]/50 text-[#d7b773] font-semibold leading-none">
       Soon
     </span>
   )
@@ -121,11 +111,12 @@ function NavItem({
     : pathname === href || (href !== '/dashboard' && !disabled && pathname.startsWith(href + '/'))
 
   const baseClasses =
-    'flex items-center gap-2.5 px-3 rounded-lg text-sm transition-all h-9 relative'
+    'flex items-center gap-2.5 px-3 rounded-full text-sm transition-all h-9 relative'
 
+  // Dark forest rail: the active item is a solid white pill, like prosperr.io's CTAs.
   const activeClasses = isActive
-    ? 'bg-blue-50 text-blue-700 font-semibold dark:bg-blue-900/40 dark:text-blue-200'
-    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 font-medium'
+    ? 'bg-[#ffffff] text-[#053f1a] font-semibold shadow-sm'
+    : 'text-[#ffffff]/75 hover:bg-[#ffffff]/10 hover:text-[#ffffff] font-medium'
 
   const disabledClasses = disabled
     ? 'opacity-60 cursor-not-allowed pointer-events-none'
@@ -158,9 +149,7 @@ function NavItem({
     <Link
       href={href}
       title={collapsed ? label : undefined}
-      className={`${baseClasses} ${activeClasses} ${disabledClasses} ${
-        isActive && !collapsed ? 'border-l-2 border-blue-600 dark:border-blue-400 pl-2.5' : ''
-      }`}
+      className={`${baseClasses} ${activeClasses} ${disabledClasses}`}
     >
       {inner}
     </Link>
@@ -178,17 +167,17 @@ function SectionLabel({
   isOpen: boolean
   onToggle: () => void
 }) {
-  if (collapsed) return <div className="h-px bg-gray-100 dark:bg-gray-800 my-2 mx-2" />
+  if (collapsed) return <div className="h-px bg-[#ffffff]/10 my-2 mx-2" />
   return (
     <button
       onClick={onToggle}
       className="flex items-center justify-between w-full px-3 mb-1 mt-4 group"
     >
-      <p className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
+      <p className="text-[10px] font-semibold text-[#d7b773] uppercase tracking-[0.14em] group-hover:text-[#ecd6a3] transition-colors">
         {label}
       </p>
       <ChevronDown
-        className={`w-3 h-3 text-gray-300 dark:text-gray-600 group-hover:text-gray-500 transition-all duration-200 ${isOpen ? '' : '-rotate-90'}`}
+        className={`w-3 h-3 text-[#d7b773]/60 group-hover:text-[#d7b773] transition-all duration-200 ${isOpen ? '' : '-rotate-90'}`}
       />
     </button>
   )
@@ -225,12 +214,12 @@ function NotificationBell({ collapsed }: { collapsed: boolean }) {
       <button
         onClick={() => setOpen((o) => !o)}
         title="Notifications"
-        className="relative flex items-center gap-2.5 px-3 h-9 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 w-full transition-colors"
+        className="relative flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-[#ffffff]/75 hover:bg-[#ffffff]/10 hover:text-[#ffffff] w-full transition-colors"
       >
         <div className="relative flex-shrink-0">
           <Bell className="w-4 h-4" />
           {unread > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#d7b773] text-[#053f1a] text-[9px] font-bold rounded-full flex items-center justify-center">
               {unread > 9 ? '9+' : unread}
             </span>
           )}
@@ -311,7 +300,7 @@ function DarkModeToggle({ collapsed }: { collapsed: boolean }) {
     <button
       onClick={toggle}
       title={dark ? 'Light mode' : 'Dark mode'}
-      className="flex items-center gap-2.5 px-3 h-9 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 w-full transition-colors"
+      className="flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-[#ffffff]/75 hover:bg-[#ffffff]/10 hover:text-[#ffffff] w-full transition-colors"
     >
       <span className="flex-shrink-0">
         {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -350,11 +339,11 @@ export default function Sidebar({
       .slice(0, 2)
       .map((w: string) => w[0].toUpperCase())
       .join('') || (userEmail[0] ?? '?').toUpperCase()
-  const plan: string = (session?.user as { plan?: string })?.plan ?? 'free'
-
+  
   return (
     <aside
-      className={`flex flex-col bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 h-screen flex-shrink-0
+      style={{ background: 'linear-gradient(180deg, #053f1a 0%, #032712 100%)' }}
+      className={`flex flex-col text-[#ffffff] h-screen flex-shrink-0
         fixed inset-y-0 left-0 z-50 transition-transform duration-200
         md:static md:z-auto md:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} ${
         collapsed ? 'w-[260px] md:w-16' : 'w-[260px]'
@@ -362,55 +351,31 @@ export default function Sidebar({
     >
       {/* ── Logo ── */}
       {collapsed ? (
-        <div className="flex flex-col items-center gap-2 px-2 py-3 border-b border-gray-100 dark:border-gray-800">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: '#0A66C2' }}
-          >
-            <span
-              className="text-white font-black text-[13px] leading-none"
-              style={{ fontFamily: 'Georgia, serif' }}
-            >
-              in
-            </span>
-          </div>
+        <div className="flex flex-col items-center gap-2 px-2 py-4 border-b border-[#ffffff]/10">
+          <ProsperrLogo tone="light" showWordmark={false} size={26} />
           <button
             onClick={() => setCollapsed(false)}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded"
+            className="text-[#ffffff]/60 hover:text-[#ffffff] p-1 rounded"
             title="Expand"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       ) : (
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 dark:border-gray-800">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center"
-              style={{ backgroundColor: '#0A66C2' }}
-            >
-              <span
-                className="text-white font-black text-[13px] leading-none"
-                style={{ fontFamily: 'Georgia, serif' }}
-              >
-                in
-              </span>
-            </div>
-            <span className="text-base font-extrabold text-gray-900 tracking-tight whitespace-nowrap">
-              OutReachAI
-              <span className="text-blue-600 dark:text-blue-400">.in</span>
-            </span>
-          </div>
+        <div className="flex items-center justify-between px-4 py-4 border-b border-[#ffffff]/10">
+          <Link href="/dashboard" aria-label="Prosperr Sales CRM home">
+            <ProsperrLogo tone="light" size={26} product="Sales CRM" />
+          </Link>
           <button
             onClick={() => setCollapsed(true)}
-            className="hidden md:block text-gray-400 hover:text-gray-600 p-1 rounded"
+            className="hidden md:block text-[#ffffff]/60 hover:text-[#ffffff] p-1 rounded"
             title="Collapse"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={onClose}
-            className="md:hidden text-gray-400 hover:text-gray-600 p-1 rounded"
+            className="md:hidden text-[#ffffff]/60 hover:text-[#ffffff] p-1 rounded"
             title="Close menu"
           >
             <X className="w-5 h-5" />
@@ -419,86 +384,59 @@ export default function Sidebar({
       )}
 
       {/* ── Nav ── */}
-      <nav className="flex-1 px-2 py-3 overflow-y-auto">
-        {/* Home + OutReach Agent */}
+      <nav className="flex-1 px-2 py-3 overflow-y-auto no-scrollbar">
         <div className="space-y-0.5">
           {NAV_TOP.map((item) => (
             <NavItem key={item.href} {...item} collapsed={collapsed} />
           ))}
         </div>
 
-        {/* Divider */}
-        <div className="h-px bg-gray-100 dark:bg-gray-800 my-3 mx-1" />
-
-        {/* FIND & MANAGE */}
         <SectionLabel
-          label="Find & Manage"
+          label="Prospecting"
           collapsed={collapsed}
-          isOpen={!closedSections.has('find')}
-          onToggle={() => toggleSection('find')}
+          isOpen={!closedSections.has('prospect')}
+          onToggle={() => toggleSection('prospect')}
         />
-        {/* Fix 7: overflow-hidden + max-h transition animates collapse instead of instant snap */}
-        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('find') ? 'max-h-0 opacity-0' : 'max-h-64 opacity-100'}`}>
+        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('prospect') ? 'max-h-0 opacity-0' : 'max-h-80 opacity-100'}`}>
           <div className="space-y-0.5">
-            {NAV_FIND.map((item) => (
+            {NAV_PROSPECT.map((item) => (
               <NavItem key={item.href} {...item} collapsed={collapsed} />
             ))}
           </div>
         </div>
-
-        {/* ENGAGE */}
         <SectionLabel
-          label="Engage"
+          label="Pipeline"
           collapsed={collapsed}
-          isOpen={!closedSections.has('engage')}
-          onToggle={() => toggleSection('engage')}
+          isOpen={!closedSections.has('pipeline')}
+          onToggle={() => toggleSection('pipeline')}
         />
-        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('engage') ? 'max-h-0 opacity-0' : 'max-h-80 opacity-100'}`}>
+        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('pipeline') ? 'max-h-0 opacity-0' : 'max-h-40 opacity-100'}`}>
           <div className="space-y-0.5">
-            {NAV_ENGAGE.map((item) => (
+            {NAV_PIPELINE.map((item) => (
               <NavItem key={item.href} {...item} collapsed={collapsed} />
             ))}
           </div>
         </div>
-
-        {/* GROW */}
         <SectionLabel
-          label="Grow"
+          label="Insights"
           collapsed={collapsed}
-          isOpen={!closedSections.has('grow')}
-          onToggle={() => toggleSection('grow')}
+          isOpen={!closedSections.has('insights')}
+          onToggle={() => toggleSection('insights')}
         />
-        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('grow') ? 'max-h-0 opacity-0' : 'max-h-40 opacity-100'}`}>
+        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('insights') ? 'max-h-0 opacity-0' : 'max-h-40 opacity-100'}`}>
           <div className="space-y-0.5">
-            {NAV_GROW.map((item) => (
+            {NAV_INSIGHTS.map((item) => (
               <NavItem key={item.href} {...item} collapsed={collapsed} />
             ))}
           </div>
         </div>
-
-        {/* ANALYZE */}
         <SectionLabel
-          label="Analyze"
-          collapsed={collapsed}
-          isOpen={!closedSections.has('analyze')}
-          onToggle={() => toggleSection('analyze')}
-        />
-        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('analyze') ? 'max-h-0 opacity-0' : 'max-h-52 opacity-100'}`}>
-          <div className="space-y-0.5">
-            {NAV_ANALYZE.map((item) => (
-              <NavItem key={item.href} {...item} collapsed={collapsed} />
-            ))}
-          </div>
-        </div>
-
-        {/* COMING SOON */}
-        <SectionLabel
-          label="Coming Soon"
+          label="Shipping this sprint"
           collapsed={collapsed}
           isOpen={!closedSections.has('coming-soon')}
           onToggle={() => toggleSection('coming-soon')}
         />
-        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('coming-soon') ? 'max-h-0 opacity-0' : 'max-h-40 opacity-100'}`}>
+        <div className={`overflow-hidden transition-all duration-200 ease-in-out ${closedSections.has('coming-soon') ? 'max-h-0 opacity-0' : 'max-h-52 opacity-100'}`}>
           <div className="space-y-0.5">
             {NAV_COMING_SOON.map((item) => (
               <NavItem key={item.href} {...item} collapsed={collapsed} />
@@ -507,72 +445,44 @@ export default function Sidebar({
         </div>
 
         {/* Utility row */}
-        <div className="mt-4 space-y-0.5">
+        <div className="mt-4 pt-3 border-t border-[#ffffff]/10 space-y-0.5">
           <NotificationBell collapsed={collapsed} />
           <DarkModeToggle collapsed={collapsed} />
-          <NavItem
-            href="/download-extension"
-            label="Extension"
-            icon={Download}
-            badge={{ kind: 'live' }}
-            collapsed={collapsed}
-          />
           <NavItem href="/settings/team" label="Team" icon={Users} collapsed={collapsed} />
-          {/* Fix 2: exact=true so /settings doesn't activate when on /settings/team */}
+          {/* exact=true so /settings doesn't activate when on /settings/team */}
           <NavItem href="/settings" label="Settings" icon={Settings} exact collapsed={collapsed} />
           {session?.user?.isAdmin && (
             <NavItem href="/admin/users" label="Admin · Users" icon={ShieldCheck} collapsed={collapsed} />
           )}
-          <Link
-            href="/report-issue"
-            title={collapsed ? 'Report issue' : undefined}
-            className="flex items-center gap-2.5 px-3 h-9 rounded-lg text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 dark:text-gray-500 dark:hover:bg-red-950 dark:hover:text-red-400 transition-colors"
-          >
-            <Bug className="w-4 h-4 flex-shrink-0" />
-            {!collapsed && <span>Report issue</span>}
-          </Link>
         </div>
       </nav>
 
       {/* ── Footer ── */}
-      <div className="px-3 py-3 border-t border-gray-100 dark:border-gray-800 space-y-2">
-        {/* Plan badge */}
-        {!collapsed && (
-          <div className="flex items-center gap-2 px-1">
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 capitalize">
-              {plan} plan
-            </span>
-          </div>
-        )}
-
-        {/* User row */}
+      <div className="px-3 py-3 border-t border-[#ffffff]/10">
         {userEmail ? (
           collapsed ? (
             <div className="flex justify-center">
-              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-xs font-bold text-blue-700 dark:text-blue-200">
+              <div className="w-8 h-8 bg-[#d7b773] rounded-full flex items-center justify-center text-xs font-bold text-[#053f1a]">
                 {userInitials}
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-blue-700 dark:text-blue-200">
+            <div className="flex items-center gap-2.5 rounded-2xl bg-[#ffffff]/[0.06] px-2.5 py-2">
+              <div className="w-8 h-8 bg-[#d7b773] rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-[#053f1a]">
                 {userInitials}
               </div>
               <div className="flex-1 min-w-0">
-                <p
-                  className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate"
-                  title={userName}
-                >
+                <p className="text-xs font-semibold text-[#ffffff] truncate" title={userName}>
                   {userName}
                 </p>
-                <p className="text-[10px] text-gray-500 truncate" title={userEmail}>
+                <p className="text-[10px] text-[#ffffff]/55 truncate" title={userEmail}>
                   {userEmail}
                 </p>
               </div>
               <button
                 onClick={() => signOut({ callbackUrl: '/login' })}
                 title="Sign out"
-                className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1 rounded"
+                className="flex-shrink-0 text-[#ffffff]/55 hover:text-[#d7b773] transition-colors p-1 rounded"
               >
                 <LogOut className="w-3.5 h-3.5" />
               </button>

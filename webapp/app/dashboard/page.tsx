@@ -4,8 +4,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Users, Megaphone, MessageSquare, Plus, Mail, TrendingUp } from 'lucide-react'
-import OnboardingChecklist from '@/components/OnboardingChecklist'
+import {
+  Users, MessageSquare, Mail, TrendingUp, Phone, Building2, ArrowUpRight,
+  Target, CalendarDays, ListChecks, Flame,
+} from 'lucide-react'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -103,150 +105,138 @@ export default function DashboardPage() {
 
   if (!session) return null
 
-  const userName = session.user?.name ?? session.user?.email ?? 'there'
+  const firstName = (session.user?.name ?? session.user?.email ?? 'there').split(/[ @]/)[0]
+  const inr = (n: number) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n)
+  const hourIST = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }).format(new Date()))
+  const greeting = hourIST < 12 ? 'Good morning' : hourIST < 17 ? 'Good afternoon' : 'Good evening'
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl">
-      {/* ── Beta banner ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4 p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900 rounded-lg text-sm">
-        <span className="text-emerald-700 dark:text-emerald-200 font-medium">
-          🎉 OutreachAI is in beta — all features are free, forever for early users.
-        </span>
-        <span className="sm:ml-auto">
-          <Link href="/settings/team" className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-700 dark:text-emerald-200 hover:underline">
-            Invite your team →
+    <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-6">
+      {/* ── Hero band ── */}
+      <section
+        className="relative overflow-hidden rounded-3xl p-6 md:p-10 text-[#ffffff]"
+        style={{ background: 'radial-gradient(120% 120% at 0% 0%, #0d5a28 0%, #053f1a 50%, #021a0c 100%)' }}
+      >
+        <div
+          aria-hidden
+          className="absolute -right-20 -top-20 w-80 h-80 rounded-full opacity-25"
+          style={{ background: 'radial-gradient(circle, #4ae386 0%, transparent 65%)' }}
+        />
+        <p className="relative text-xs font-semibold uppercase tracking-[0.16em] text-[#d7b773]">Prosperr Sales CRM</p>
+        <h1 className="relative mt-3 text-3xl md:text-5xl font-bold leading-[1.05] max-w-2xl">
+          {greeting}, {firstName}.
+        </h1>
+        <p className="relative mt-3 text-[#ffffff]/75 max-w-xl">
+          Every account needs an owner and a dated next step. Start with today&apos;s calls, then move what&apos;s stuck.
+        </p>
+        <div className="relative mt-7 flex flex-wrap gap-3">
+          <Link href="/calls" className="inline-flex items-center gap-2 rounded-full bg-[#ffffff] text-[#053f1a] px-5 py-3 text-sm font-semibold hover:bg-[#f3f3f5] transition-colors">
+            <Phone className="w-4 h-4" /> Log a call <ArrowUpRight className="w-4 h-4" />
           </Link>
-        </span>
-      </div>
-
-      {/* ── Top bar (welcome) ── */}
-      <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">
-            Welcome back, {userName.split(' ')[0]}
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Here&apos;s what&apos;s happening with your outreach.
-          </p>
+          <Link href="/companies" className="inline-flex items-center gap-2 rounded-full border border-[#ffffff]/30 px-5 py-3 text-sm font-semibold hover:bg-[#ffffff]/10 transition-colors">
+            <Building2 className="w-4 h-4" /> Add account
+          </Link>
+          <Link href="/pipeline" className="inline-flex items-center gap-2 rounded-full border border-[#ffffff]/30 px-5 py-3 text-sm font-semibold hover:bg-[#ffffff]/10 transition-colors">
+            <TrendingUp className="w-4 h-4" /> Open pipeline
+          </Link>
         </div>
+      </section>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <a
-            href="https://www.producthunt.com/products/outreachai-in?launch=outreachai-in"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-orange-700 bg-orange-50 border border-orange-200 rounded-lg px-4 py-2 hover:bg-orange-100 transition-colors"
-          >
-            We&apos;re live on Product Hunt — support us!
-          </a>
-          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1">
-            All features free during beta
-          </span>
-        </div>
-      </div>
-
-      {/* ── Book a demo card ── */}
-      {/* ── Onboarding checklist ── */}
-      <OnboardingChecklist />
-
-      {/* ── Stats row ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {/* ── Key numbers ── */}
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statsLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-5 animate-pulse"
-            >
+            <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 animate-pulse">
               <div className="h-8 bg-gray-100 dark:bg-gray-700 rounded mb-2 w-16" />
               <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded w-24" />
             </div>
           ))
         ) : (
           <>
+            <StatCard icon={<Users className="w-5 h-5" />} color="text-blue-700 bg-blue-50" value={stats?.totalContacts ?? 0} label="Stakeholders" />
+            <StatCard icon={<Target className="w-5 h-5" />} color="text-violet-700 bg-violet-50" value={pipelineStats?.openDeals ?? 0} label="Open opportunities" />
             <StatCard
-              icon={<Users className="w-5 h-5" />}
-              color="text-blue-600 bg-blue-50"
-              value={stats?.totalLeads ?? 0}
-              label="Total Leads"
+              icon={<Mail className="w-5 h-5" />} color="text-blue-700 bg-blue-50"
+              value={stats?.emailsSent ?? 0} label="Sequence emails sent"
+              sparkline={stats?.sparklineEmailsSent} sparklineColor="#0a4a1f"
             />
             <StatCard
-              icon={<Megaphone className="w-5 h-5" />}
-              color="text-green-600 bg-green-50"
-              value={stats?.activeCampaigns ?? 0}
-              label="Active Campaigns"
-            />
-            <StatCard
-              icon={<Mail className="w-5 h-5" />}
-              color="text-blue-600 bg-blue-50"
-              value={stats?.emailsSent ?? 0}
-              label="Emails Sent"
-              sparkline={stats?.sparklineEmailsSent}
-              sparklineColor="#3b82f6"
-            />
-            <StatCard
-              icon={<MessageSquare className="w-5 h-5" />}
-              color="text-purple-600 bg-purple-50"
-              value={stats?.totalReplies ?? stats?.replies ?? 0}
-              label="Replies"
-              sparkline={stats?.sparklineReplies}
-              sparklineColor="#8b5cf6"
+              icon={<MessageSquare className="w-5 h-5" />} color="text-violet-700 bg-violet-50"
+              value={stats?.totalReplies ?? stats?.replies ?? 0} label="Replies"
+              sparkline={stats?.sparklineReplies} sparklineColor="#a87a3e"
             />
           </>
         )}
-      </div>
+      </section>
 
-      {/* ── Pipeline card ── */}
-      <div className="mb-6">
+      <div className="grid lg:grid-cols-[1.4fr_1fr] gap-6">
+        {/* ── Pipeline ── */}
         <Link
           href="/pipeline"
-          className="block bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-5 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-sm transition-all group"
+          className="block bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-sm transition-all group"
         >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg text-blue-600 bg-blue-50 flex-shrink-0">
-                <TrendingUp className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white">Pipeline</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Sales pipeline</p>
-              </div>
-            </div>
-            <span className="text-xs text-blue-600 dark:text-blue-400 font-medium group-hover:underline">View →</span>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Pipeline</h2>
+            <span className="text-sm text-blue-600 dark:text-blue-400 font-semibold group-hover:underline">View board →</span>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-4 mt-4">
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Total pipeline</p>
-              <p className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">
-                {statsLoading ? '—' : pipelineStats ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(pipelineStats.totalPipeline) : '$0'}
+              <p className="text-xs text-gray-500 dark:text-gray-400">Expected MRR</p>
+              <p className="font-display text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
+                {statsLoading ? '—' : inr(pipelineStats?.totalPipeline ?? 0)}
               </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Open deals</p>
-              <p className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Open</p>
+              <p className="font-display text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
                 {statsLoading ? '—' : pipelineStats?.openDeals ?? 0}
               </p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Close rate</p>
-              <p className="text-lg font-bold text-gray-900 dark:text-white tabular-nums">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Win rate</p>
+              <p className="font-display text-2xl font-bold text-gray-900 dark:text-white tabular-nums">
                 {statsLoading ? '—' : `${pipelineStats?.closeRate ?? 0}%`}
               </p>
             </div>
           </div>
-        </Link>
-      </div>
 
-      {/* ── Quick actions ── */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        <Link href="/campaigns/new" className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-          <Plus className="w-4 h-4" /> New campaign
+          {/* Lifecycle rail from the PRD */}
+          <ol className="mt-6 flex flex-wrap items-center gap-1.5 text-xs font-semibold">
+            {['Prospect', 'SQL', 'L1', 'Multithreading', 'L2', 'L3', 'Negotiation', 'Won'].map((stage, i, all) => (
+              <li key={stage} className="flex items-center gap-1.5">
+                <span className={`px-3 py-1 rounded-full ${stage === 'Won' ? 'bg-violet-400 text-[#053f1a]' : 'bg-blue-50 text-blue-700 dark:bg-gray-800 dark:text-gray-200'}`}>
+                  {stage}
+                </span>
+                {i < all.length - 1 && <span className="text-gray-300">›</span>}
+              </li>
+            ))}
+          </ol>
         </Link>
-        <Link href="/leads" className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-          <Users className="w-4 h-4" /> Import leads
-        </Link>
-        <Link href="/inbox" className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-          <MessageSquare className="w-4 h-4" /> Open inbox
-        </Link>
+
+        {/* ── Roadmap for this sprint ── */}
+        <section className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Shipping this sprint</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">New workspaces for the sales team.</p>
+          <ul className="mt-4 divide-y divide-gray-100 dark:divide-gray-800">
+            {[
+              { icon: CalendarDays, title: 'My Day', body: 'Overdue and due calls, then untouched stakeholders' },
+              { icon: ListChecks, title: 'SQL Queue', body: 'ICP checks, BANT and AE assignment' },
+              { icon: Flame, title: 'Inactive & Revival', body: '60-day flag, reasons and revisit dates' },
+              { icon: Target, title: 'Targets', body: 'L1 booked and done against target, live' },
+            ].map(({ icon: Icon, title, body }) => (
+              <li key={title} className="flex items-start gap-3 py-3">
+                <span className="w-9 h-9 rounded-full bg-violet-50 text-violet-700 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-4 h-4" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{title}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{body}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
     </div>
   )
@@ -268,14 +258,14 @@ function StatCard({
   sparklineColor?: string
 }) {
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-5 flex items-center gap-4">
+    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 flex items-center gap-4">
       <div
-        className={`flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0 ${color}`}
+        className={`flex items-center justify-center w-11 h-11 rounded-full flex-shrink-0 ${color}`}
       >
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
+        <p className="font-display text-3xl font-bold text-gray-900 dark:text-white tabular-nums">{value}</p>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{label}</p>
         {sparkline && sparkline.length >= 2 && (
           <div className="mt-1.5">

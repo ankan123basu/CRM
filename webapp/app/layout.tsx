@@ -1,45 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Bricolage_Grotesque } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Prosperr's display face (prosperr.io headings).
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
 });
 
 
 // Google Analytics is opt-in: set NEXT_PUBLIC_GA_ID to enable it.
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
 export const metadata: Metadata = {
-  title: { default: 'OutreachAI — Free Lemlist & HubSpot Alternative', template: '%s | OutreachAI' },
-  description: 'AI-powered outreach sequences, CRM pipeline, workflow automation and LinkedIn automation — all in one free platform. The Lemlist + HubSpot alternative.',
-  keywords: ['lemlist alternative', 'hubspot alternative', 'linkedin outreach', 'cold email software', 'sales automation', 'crm free'],
-  authors: [{ name: 'OutreachAI' }],
-  creator: 'OutreachAI',
-  metadataBase: new URL('https://outreachai.in'),
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://outreachai.in',
-    siteName: 'OutreachAI',
-    title: 'OutreachAI — Free Lemlist & HubSpot Alternative',
-    description: 'AI outreach sequences, CRM pipeline, workflows and LinkedIn automation. Free during beta.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'OutreachAI' }],
+  title: { default: 'Prosperr Sales CRM', template: '%s | Prosperr CRM' },
+  description: "Prosperr's in-house B2B sales CRM: prospecting, SQL qualification, L1–L3 meetings, multithreading and revival in one place.",
+  applicationName: 'Prosperr Sales CRM',
+  icons: {
+    icon: [{ url: '/brand/prosperr-mark-512.png', type: 'image/png' }],
+    apple: '/brand/prosperr-mark-512.png',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'OutreachAI — Free Lemlist & HubSpot Alternative',
-    description: 'AI outreach sequences, CRM pipeline, workflows and LinkedIn automation. Free during beta.',
-    images: ['/og-image.png'],
-  },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({
@@ -51,41 +39,11 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${bricolage.variable} h-full antialiased`}
     >
       <head>
         {/* Dark mode — runs before paint to prevent white flash */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('theme');var dark=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.documentElement.classList.add('dark');}catch(e){}})();` }} />
-        {/* Global JSON-LD — Organization + SoftwareApplication schema for AI/SEO */}
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@graph': [
-            {
-              '@type': 'Organization',
-              '@id': 'https://outreachai.in/#org',
-              name: 'OutreachAI',
-              url: 'https://outreachai.in',
-              logo: 'https://outreachai.in/og-image.png',
-              contactPoint: { '@type': 'ContactPoint', email: 'girish@greatlearning.in', contactType: 'customer support' },
-              sameAs: ['https://github.com/outreachai-hq/outreachai'],
-            },
-            {
-              '@type': 'SoftwareApplication',
-              '@id': 'https://outreachai.in/#app',
-              name: 'OutreachAI',
-              url: 'https://outreachai.in',
-              applicationCategory: 'BusinessApplication',
-              operatingSystem: 'Web',
-              description: 'Free all-in-one B2B sales outreach platform. LinkedIn automation, cold email sequences, CRM pipeline, workflow automation, meeting scheduler. Free alternative to Lemlist and HubSpot.',
-              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', description: 'Free during beta — no credit card required' },
-              featureList: 'LinkedIn automation, Cold email sequences, Email warmup, A/B testing, CRM pipeline, Workflow automation, Meeting scheduler, Website visitor tracking, AI personalization',
-              keywords: 'lemlist alternative, hubspot alternative, instantly alternative, saleshandy alternative, cold email tool, linkedin outreach automation, sales crm, b2b outreach',
-              publisher: { '@id': 'https://outreachai.in/#org' },
-              isAccessibleForFree: true,
-              inLanguage: 'en',
-            },
-          ],
-        })}} />
       </head>
       <body className="min-h-full flex flex-col">
         {GA_ID && (

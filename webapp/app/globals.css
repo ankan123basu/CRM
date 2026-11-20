@@ -13,12 +13,27 @@
 
 /* ── Brand color tokens ────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --brand-blue:       #0A66C2;   /* OutreachAI primary — LinkedIn blue */
-  --brand-blue-hover: #0855a5;
-  --brand-violet:     #7c3aed;
-  --brand-gradient:   linear-gradient(135deg, #0A66C2 0%, #7c3aed 100%);
+  --background: #f4f5f2;
+  --foreground: #101312;
+
+  /* ── Prosperr brand (taken from prosperr.io's stylesheet) ──────────────────
+     forest  = announcement bar + pill CTAs      bright = menu / success green
+     navy    = PROSPERR.IO wordmark              gold   = premium accent      */
+  --prosperr-forest:      #0a4a1f;
+  --prosperr-forest-deep: #053f1a;
+  --prosperr-forest-ink:  #032712;
+  --prosperr-bright:      #15be53;
+  --prosperr-mint:        #4ae386;
+  --prosperr-navy:        #212f63;
+  --prosperr-gold:        #d7b773;
+  --prosperr-mist:        #f3f3f5;
+  --prosperr-muted:       #56645a;
+
+  /* Legacy names kept so existing components re-skin automatically. */
+  --brand-blue:       var(--prosperr-forest);
+  --brand-blue-hover: var(--prosperr-forest-deep);
+  --brand-violet:     var(--prosperr-bright);
+  --brand-gradient:   linear-gradient(135deg, #0a4a1f 0%, #15be53 100%);
 
   /* ── Status chip tokens (light mode) ──────────────────────────────────────
      Single source of truth. Components reference these — never hardcode.
@@ -45,18 +60,44 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* Unify all blue-600/700 usage to the brand color — fixes buttons, links,
-     focus rings, and badges across the entire app without touching each file. */
-  --color-blue-600:   var(--brand-blue);
-  --color-blue-700:   var(--brand-blue-hover);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Prosperr re-skin: the app was written against blue / indigo / violet / sky
+     utilities. Mapping those whole scales onto the Prosperr forest-green scale
+     re-brands every button, link, focus ring, chip and gradient in one place. */
+  --color-blue-50:  #eef7f0;  --color-blue-100: #d7eedd;  --color-blue-200: #b0dfbd;
+  --color-blue-300: #7cc995;  --color-blue-400: #3fb067;  --color-blue-500: #17984a;
+  --color-blue-600: var(--brand-blue);  --color-blue-700: var(--brand-blue-hover);
+  --color-blue-800: #04361a;  --color-blue-900: #032712;  --color-blue-950: #021a0c;
+
+  --color-indigo-50:  #eef7f0;  --color-indigo-100: #d7eedd;  --color-indigo-200: #b0dfbd;
+  --color-indigo-300: #7cc995;  --color-indigo-400: #3fb067;  --color-indigo-500: #17984a;
+  --color-indigo-600: var(--brand-blue);  --color-indigo-700: var(--brand-blue-hover);
+  --color-indigo-800: #04361a;  --color-indigo-900: #032712;  --color-indigo-950: #021a0c;
+
+  --color-sky-50:  #eef7f0;  --color-sky-100: #d7eedd;  --color-sky-200: #b0dfbd;
+  --color-sky-300: #7cc995;  --color-sky-400: #3fb067;  --color-sky-500: #17984a;
+  --color-sky-600: var(--brand-blue);  --color-sky-700: var(--brand-blue-hover);
+
+  /* violet becomes the gold accent, so gradients read forest → gold. */
+  --color-violet-50:  #fbf6ea;  --color-violet-100: #f5e9cc;  --color-violet-200: #ecd6a3;
+  --color-violet-300: #e2c486;  --color-violet-400: #d7b773;  --color-violet-500: #c49a4f;
+  --color-violet-600: #a87a3e;  --color-violet-700: #8a6232;  --color-violet-800: #6b4b27;
+  --color-violet-900: #4e371d;  --color-violet-950: #2e2011;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Prosperr headings use Bricolage Grotesque, tight tracking, like prosperr.io. */
+h1, h2, h3, .page-title, .font-display {
+  font-family: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.015em;
 }
 
 /* Hard guarantee: the page itself never scrolls horizontally on any screen.
@@ -186,10 +227,14 @@ button, a, [role="button"] {
   /* ── Primary blue: lighter in dark mode (gl-ninja-web principle) ──────────
      #0A66C2 on a dark background lacks contrast. Lighten to blue-400 so
      active states, links, and focus rings stay readable.                    */
-  --brand-blue:       #60a5fa;   /* blue-400 — visible on dark bg */
-  --brand-blue-hover: #93c5fd;   /* blue-300 — hover state */
-  --color-blue-600:   #60a5fa;
-  --color-blue-700:   #93c5fd;
+  /* Mid green: readable as text on the dark shell AND keeps white button text legible. */
+  --brand-blue:       #1fa855;
+  --brand-blue-hover: #2fc46a;
+  --color-blue-600:   #1fa855;
+  --color-blue-700:   #2fc46a;
+  --color-indigo-600: #1fa855;
+  --color-indigo-700: #2fc46a;
+  --background: #0b100d;
 
   /* ── Status chip tokens (dark mode overrides) ─────────────────────────── */
   --chip-replied-bg:  #14532d;   --chip-replied-text:  #86efac;  --chip-replied-border:  #166534;
@@ -202,7 +247,7 @@ button, a, [role="button"] {
   --chip-ab-bg:       #4a044e;   --chip-ab-text:       #f0abfc;  --chip-ab-border:       #86198f;
 
   --color-white:    #1e293b;   /* was #ffffff  → card/panel background   */
-  --color-gray-50:  #0f172a;   /* was #f8fafc  → page background          */
+  --color-gray-50:  #0b120e;   /* was #f8fafc  → page background (Prosperr forest-black) */
   --color-gray-100: #1e293b;   /* was #f1f5f9  → subtle card/hover        */
   --color-gray-200: #334155;   /* was #e2e8f0  → borders                  */
   --color-gray-300: #475569;   /* was #cbd5e1  → muted borders            */
@@ -212,7 +257,7 @@ button, a, [role="button"] {
   --color-gray-700: #e2e8f0;   /* was #334155  → primary text (lighter)   */
   --color-gray-800: #f1f5f9;   /* was #1e293b  → heading text             */
   --color-gray-900: #f8fafc;   /* was #0f172a  → strongest text           */
-  --color-gray-950: #0f172a;   /* page/outermost background               */
+  --color-gray-950: #0b120e;   /* page/outermost background (Prosperr forest-black) */
 
   /* Inputs & form elements */
   --tw-ring-color: var(--brand-blue);

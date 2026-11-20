@@ -2,13 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, User, Megaphone, Inbox, MoreHorizontal } from 'lucide-react'
+import { Home, Building2, Phone, TrendingUp, MoreHorizontal } from 'lucide-react'
 
 const BOTTOM_TABS = [
   { href: '/dashboard', label: 'Home', icon: Home },
-  { href: '/contacts', label: 'Contacts', icon: User },
-  { href: '/campaigns', label: 'Campaigns', icon: Megaphone },
-  { href: '/inbox', label: 'Inbox', icon: Inbox },
+  { href: '/companies', label: 'Accounts', icon: Building2 },
+  { href: '/calls', label: 'Calls', icon: Phone },
+  { href: '/pipeline', label: 'Pipeline', icon: TrendingUp },
 ]
 
 interface MobileBottomNavProps {

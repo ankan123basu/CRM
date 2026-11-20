@@ -104,9 +104,9 @@ export default function CompaniesPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Companies</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Accounts</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-            Account-based view of every company across your contacts and leads.
+            Every account with its stakeholders, owners and stage.
           </p>
         </div>
         <button
@@ -114,7 +114,7 @@ export default function CompaniesPage() {
           className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-3.5 py-2 rounded-lg transition-colors"
         >
           <Plus className="w-4 h-4" />
-          Add company
+          Add account
         </button>
       </div>
 

@@ -2,6 +2,7 @@
 import { useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { ProsperrLogo } from '@/components/ProsperrLogo'
 
 function ResetForm() {
   const params = useSearchParams()
@@ -64,12 +65,9 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#0A66C2' }}>
-            <span className="text-white font-black text-sm leading-none" style={{ fontFamily: 'Georgia, serif' }}>in</span>
-          </div>
-          <span className="text-xl font-extrabold text-gray-900 tracking-tight">OutReachAI<span style={{ color: '#0A66C2' }}>.in</span></span>
+          <ProsperrLogo size={30} product="Sales CRM" />
         </div>
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+        <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-8">
           <Suspense fallback={<div className="text-center text-gray-400 text-sm">Loading…</div>}>
             <ResetForm />
           </Suspense>
