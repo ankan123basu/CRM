@@ -6,7 +6,7 @@ import { Home, Building2, Phone, TrendingUp, MoreHorizontal } from 'lucide-react
 
 const BOTTOM_TABS = [
   { href: '/dashboard', label: 'Home', icon: Home },
-  { href: '/companies', label: 'Accounts', icon: Building2 },
+  { href: '/accounts', label: 'Accounts', icon: Building2 },
   { href: '/calls', label: 'Calls', icon: Phone },
   { href: '/pipeline', label: 'Pipeline', icon: TrendingUp },
 ]

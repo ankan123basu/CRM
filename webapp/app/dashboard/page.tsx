@@ -134,7 +134,7 @@ export default function DashboardPage() {
           <Link href="/calls" className="inline-flex items-center gap-2 rounded-full bg-[#ffffff] text-[#053f1a] px-5 py-3 text-sm font-semibold hover:bg-[#f3f3f5] transition-colors">
             <Phone className="w-4 h-4" /> Log a call <ArrowUpRight className="w-4 h-4" />
           </Link>
-          <Link href="/companies" className="inline-flex items-center gap-2 rounded-full border border-[#ffffff]/30 px-5 py-3 text-sm font-semibold hover:bg-[#ffffff]/10 transition-colors">
+          <Link href="/accounts" className="inline-flex items-center gap-2 rounded-full border border-[#ffffff]/30 px-5 py-3 text-sm font-semibold hover:bg-[#ffffff]/10 transition-colors">
             <Building2 className="w-4 h-4" /> Add account
           </Link>
           <Link href="/pipeline" className="inline-flex items-center gap-2 rounded-full border border-[#ffffff]/30 px-5 py-3 text-sm font-semibold hover:bg-[#ffffff]/10 transition-colors">

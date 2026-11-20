@@ -8,62 +8,62 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  password      String?   // null for OAuth (Google) users
-  name          String?
-  stripeCustomerId    String?
+  id                   String    @id @default(cuid())
+  email                String    @unique
+  password             String? // null for OAuth (Google) users
+  name                 String?
+  stripeCustomerId     String?
   stripeSubscriptionId String?
-  plan               String    @default("free") // free | pro
+  plan                 String    @default("free") // free | pro
   extensionConnected   Boolean   @default(false)
   extensionConnectedAt DateTime?
   passwordResetToken   String?
   passwordResetExpiry  DateTime?
-  aiKeyAnthropic       String?  @db.Text
-  aiKeyOpenai          String?  @db.Text
-  aiKeyGemini          String?  @db.Text
-  apolloApiKey         String?  @db.Text
-  hunterApiKey         String?  @db.Text
-  onboardingCompleted  Boolean  @default(false)
-  onboardingStep       Int      @default(0)
+  aiKeyAnthropic       String?   @db.Text
+  aiKeyOpenai          String?   @db.Text
+  aiKeyGemini          String?   @db.Text
+  apolloApiKey         String?   @db.Text
+  hunterApiKey         String?   @db.Text
+  onboardingCompleted  Boolean   @default(false)
+  onboardingStep       Int       @default(0)
   workspaceId          String?
-  linkedInPostHour     Int      @default(19)
-  linkedInPostTz       String   @default("Asia/Kolkata")
-  linkedInClientId     String?  @db.Text
-  linkedInClientSecret String?  @db.Text
+  linkedInPostHour     Int       @default(19)
+  linkedInPostTz       String    @default("Asia/Kolkata")
+  linkedInClientId     String?   @db.Text
+  linkedInClientSecret String?   @db.Text
   // Plan 8 — auto-draft AI replies on inbound messages.
   // 'off' | 'email' | 'linkedin' | 'both'
-  aiReplyAutoDraft     String   @default("off")
-  websiteTrackingId    String?  @unique
+  aiReplyAutoDraft     String    @default("off")
+  websiteTrackingId    String?   @unique
   // WhatsApp via mf-engine — waApiKey + waWebhookSecret are encrypted at rest
-  waApiKey             String?  @db.Text
+  waApiKey             String?   @db.Text
   waPhone              String?
   waBaseUrl            String?
-  waWebhookSecret      String?  @db.Text
+  waWebhookSecret      String?   @db.Text
   createdAt            DateTime  @default(now())
 
-  contacts            Contact[]
-  templates           Template[]
-  sequences           Sequence[]
-  leadLists           LeadList[]
-  campaigns           Campaign[]
-  linkedinAccounts    LinkedInAccount[]
-  linkedInPosts       LinkedInPost[]
-  capturedPosts       CapturedPost[]
-  emailAccounts       EmailAccount[]
-  webhookEndpoints    WebhookEndpoint[]
-  emailMessages       EmailMessage[]
-  conversations       Conversation[]
-  companies           Company[]
-  leadActivities      LeadActivity[]
-  tasks               Task[]
-  linkedInActions     LinkedInAction[]
-  marketingCampaigns  MarketingCampaign[]
-  unsubscribes        Unsubscribe[]
-  warmupAccounts      WarmupAccount[]
-  ownedWorkspaces     Workspace[]       @relation("OwnedWorkspaces")
+  contacts             Contact[]
+  templates            Template[]
+  sequences            Sequence[]
+  leadLists            LeadList[]
+  campaigns            Campaign[]
+  linkedinAccounts     LinkedInAccount[]
+  linkedInPosts        LinkedInPost[]
+  capturedPosts        CapturedPost[]
+  emailAccounts        EmailAccount[]
+  webhookEndpoints     WebhookEndpoint[]
+  emailMessages        EmailMessage[]
+  conversations        Conversation[]
+  companies            Company[]
+  leadActivities       LeadActivity[]
+  tasks                Task[]
+  linkedInActions      LinkedInAction[]
+  marketingCampaigns   MarketingCampaign[]
+  unsubscribes         Unsubscribe[]
+  warmupAccounts       WarmupAccount[]
+  ownedWorkspaces      Workspace[]           @relation("OwnedWorkspaces")
   workspaceMemberships WorkspaceMember[]
-  workspaceInvitesSent WorkspaceInvite[] @relation("InvitedByUser")
+  workspaceInvitesSent WorkspaceInvite[]     @relation("InvitedByUser")
   snippets             Snippet[]
   schedules            Schedule[]
   conversationLabels   ConversationLabel[]
@@ -80,23 +80,35 @@ model User {
   meetingPage          MeetingPage?
   workflows            Workflow[]
   websiteVisits        WebsiteVisit[]
+
+  // ── Prosperr Sales CRM ──────────────────────────────────────────────────
+  // BDR | AE | MANAGER | ADMIN  (see lib/prosperr/rbac.ts)
+  crmRole              String        @default("BDR")
+  crmActive            Boolean       @default(true)
+  crmAccountsAsAe      CrmAccount[]  @relation("AccountAe")
+  crmAccountsSqlCredit CrmAccount[]  @relation("AccountSqlBdr")
+  crmAccountsCreated   CrmAccount[]  @relation("AccountCreatedBy")
+  crmStakeholders      Stakeholder[] @relation("StakeholderBdr")
+  crmActivities        CrmActivity[] @relation("ActivityLoggedBy")
+  crmTasks             CrmTask[]     @relation("TaskAssignee")
+  crmMeetingsBooked    CrmMeeting[]  @relation("MeetingBookedBy")
 }
 
 model WebsiteVisit {
-  id                String   @id @default(cuid())
-  userId            String
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  trackingId        String   // matches User.websiteTrackingId
-  ip                String?
-  resolvedOrg       String?  // company name from IP (ipinfo.io)
-  resolvedDomain    String?  // domain from IP org
-  matchedLeadId     String?  // if IP matched a known lead
-  matchedContactId  String?  // if IP matched a known contact
-  matchedCompanyId  String?  // if IP matched a known company
-  url               String?  @db.Text
-  referrer          String?  @db.Text
-  userAgent         String?
-  visitedAt         DateTime @default(now())
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackingId       String // matches User.websiteTrackingId
+  ip               String?
+  resolvedOrg      String? // company name from IP (ipinfo.io)
+  resolvedDomain   String? // domain from IP org
+  matchedLeadId    String? // if IP matched a known lead
+  matchedContactId String? // if IP matched a known contact
+  matchedCompanyId String? // if IP matched a known company
+  url              String?  @db.Text
+  referrer         String?  @db.Text
+  userAgent        String?
+  visitedAt        DateTime @default(now())
 
   @@index([userId, visitedAt(sort: Desc)])
   @@index([trackingId, visitedAt(sort: Desc)])
@@ -104,54 +116,54 @@ model WebsiteVisit {
 }
 
 model EmailAccount {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  provider     String   @default("smtp") // smtp | gmail | ses
-  name         String
-  email        String
-  smtpHost     String?
-  smtpPort     Int?
-  smtpUser     String?
-  smtpPass     String?
-  imapHost     String?
-  imapPort     Int?
+  id                  String              @id @default(cuid())
+  userId              String
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider            String              @default("smtp") // smtp | gmail | ses
+  name                String
+  email               String
+  smtpHost            String?
+  smtpPort            Int?
+  smtpUser            String?
+  smtpPass            String?
+  imapHost            String?
+  imapPort            Int?
   // AWS SES fields (encrypted at rest)
-  awsRegion              String?
-  awsAccessKeyId         String?  @db.Text
-  awsSecretAccessKey     String?  @db.Text
-  sesConfigurationSet    String?  @default("mytaxesfilings-bulk")
+  awsRegion           String?
+  awsAccessKeyId      String?             @db.Text
+  awsSecretAccessKey  String?             @db.Text
+  sesConfigurationSet String?             @default("mytaxesfilings-bulk")
   // SendGrid (encrypted at rest)
-  sendgridApiKey    String?  @db.Text
-  isDefault    Boolean  @default(false)
-  dailyLimit   Int      @default(50)
-  dailySendCount   Int      @default(0)
-  dailySendResetAt DateTime?
-  signature    String?  @db.Text
-  warmupActive Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  messages     EmailMessage[]
-  marketingCampaigns MarketingCampaign[]
-  warmupAccount      WarmupAccount?
+  sendgridApiKey      String?             @db.Text
+  isDefault           Boolean             @default(false)
+  dailyLimit          Int                 @default(50)
+  dailySendCount      Int                 @default(0)
+  dailySendResetAt    DateTime?
+  signature           String?             @db.Text
+  warmupActive        Boolean             @default(false)
+  createdAt           DateTime            @default(now())
+  messages            EmailMessage[]
+  marketingCampaigns  MarketingCampaign[]
+  warmupAccount       WarmupAccount?
 
   @@index([userId])
 }
 
 model EmailMessage {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   emailAccountId String
   emailAccount   EmailAccount @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
   contactId      String?
   to             String
   subject        String
-  body           String   @db.Text
-  status         String   @default("sent") // sent | opened | replied | bounced
-  sentAt         DateTime @default(now())
+  body           String       @db.Text
+  status         String       @default("sent") // sent | opened | replied | bounced
+  sentAt         DateTime     @default(now())
   openedAt       DateTime?
   repliedAt      DateTime?
-  trackingId     String   @unique @default(cuid())
+  trackingId     String       @unique @default(cuid())
 
   @@index([userId])
 }
@@ -163,40 +175,40 @@ model EmailMessage {
 // clean. Replaced the legacy LinkedIn-only InboxThread table (retired
 // 2026-06-23).
 model Conversation {
-  id                String   @id @default(cuid())
-  userId            String
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Optional links to other domain objects. No foreign-key relation lines yet
   // to keep the migration tight — they're plain ID columns.
-  contactId         String?
-  leadId            String?
-  campaignId        String?
+  contactId  String?
+  leadId     String?
+  campaignId String?
 
-  channel           String   // 'email' | 'linkedin' | 'sms' | 'whatsapp'
-  subject           String?  // null for chat-style channels
+  channel String // 'email' | 'linkedin' | 'sms' | 'whatsapp'
+  subject String? // null for chat-style channels
 
   // Channel-specific identifying keys (exactly one is non-null per row)
   linkedinProfileId String?
-  emailThreadKey    String?   // normalised: lowercased participant email + subject
+  emailThreadKey    String? // normalised: lowercased participant email + subject
   smsPhone          String?
 
   // Display
-  participantName   String
-  participantEmail  String?
-  participantUrl    String?
-  avatarUrl         String?
+  participantName  String
+  participantEmail String?
+  participantUrl   String?
+  avatarUrl        String?
 
   // State
-  status            String   @default("open")  // open | done | snoozed
-  unread            Boolean  @default(false)
-  labels            String[] @default([])      // 'interested' | 'not_interested' | 'out_of_office' | 'favorite' | <custom>
-  lastMessageAt     DateTime?
-  lastSenderIsMe    Boolean  @default(true)
-  syncedAt          DateTime @default(now())
-  createdAt         DateTime @default(now())
+  status         String    @default("open") // open | done | snoozed
+  unread         Boolean   @default(false)
+  labels         String[]  @default([]) // 'interested' | 'not_interested' | 'out_of_office' | 'favorite' | <custom>
+  lastMessageAt  DateTime?
+  lastSenderIsMe Boolean   @default(true)
+  syncedAt       DateTime  @default(now())
+  createdAt      DateTime  @default(now())
 
-  messages          Message[]
+  messages Message[]
 
   @@unique([userId, channel, linkedinProfileId])
   @@unique([userId, channel, emailThreadKey])
@@ -206,44 +218,44 @@ model Conversation {
 }
 
 model Message {
-  id              String       @id @default(cuid())
-  conversationId  String
-  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  direction       String       // 'in' | 'out'
-  body            String       @db.Text
-  html            String?      @db.Text
-  externalId      String?      // provider message-id (gmail msgId / li msgId / pixel trackingId)
-  attachments     Json?
-  sentAt          DateTime
-  createdAt       DateTime     @default(now())
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  direction      String // 'in' | 'out'
+  body           String       @db.Text
+  html           String?      @db.Text
+  externalId     String? // provider message-id (gmail msgId / li msgId / pixel trackingId)
+  attachments    Json?
+  sentAt         DateTime
+  createdAt      DateTime     @default(now())
 
   @@index([conversationId, sentAt])
   @@index([externalId])
 }
 
 model Contact {
-  id          String    @id @default(cuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  profileId   String
-  name        String
-  email       String?
-  company     String?     // cached display string; mirrors companyRel.name when set
-  companyId   String?
-  companyRel  Company?   @relation(fields: [companyId], references: [id], onDelete: SetNull)
-  headline    String?
-  linkedinUrl String?
-  status      String    @default("sent") // sent | followup | replied
-  sentAt      DateTime  @default(now())
-  followupAt  DateTime?
-  notes       String?
-  createdAt   DateTime  @default(now())
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileId    String
+  name         String
+  email        String?
+  company      String? // cached display string; mirrors companyRel.name when set
+  companyId    String?
+  companyRel   Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  headline     String?
+  linkedinUrl  String?
+  status       String    @default("sent") // sent | followup | replied
+  sentAt       DateTime  @default(now())
+  followupAt   DateTime?
+  notes        String?
+  createdAt    DateTime  @default(now())
   // Plan 5 — user-defined columns. Shape: { "<defKey>": <value> }
-  customFields Json     @default("{}")
+  customFields Json      @default("{}")
   // Per-AI-column run status, keyed by defKey. { status, lastRunAt, error? }
-  aiColumnRuns Json     @default("{}")
+  aiColumnRuns Json      @default("{}")
 
-  activities  LeadActivity[]
+  activities LeadActivity[]
 
   @@index([userId])
   @@index([companyId])
@@ -262,20 +274,20 @@ model Template {
 }
 
 model LinkedInAccount {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   userId           String
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   name             String
   email            String?
   profileUrl       String?
-  avatarColor      String   @default("#ef4444")
-  isDefault        Boolean  @default(false)
-  connectedAt      DateTime @default(now())
-  accessToken      String?  @db.Text
-  refreshToken     String?  @db.Text
+  avatarColor      String    @default("#ef4444")
+  isDefault        Boolean   @default(false)
+  connectedAt      DateTime  @default(now())
+  accessToken      String?   @db.Text
+  refreshToken     String?   @db.Text
   tokenExpiry      DateTime?
   linkedInMemberId String?
-  linkedInScope    String?  // scopes granted by user e.g. "w_member_social,openid,profile"
+  linkedInScope    String? // scopes granted by user e.g. "w_member_social,openid,profile"
 
   posts LinkedInPost[]
 
@@ -297,14 +309,14 @@ model Sequence {
 }
 
 model LeadList {
-  id        String     @id @default(cuid())
-  userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  leads     Lead[]
-  campaigns Campaign[]
+  id                 String              @id @default(cuid())
+  userId             String
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name               String
+  leads              Lead[]
+  campaigns          Campaign[]
   marketingCampaigns MarketingCampaign[]
-  createdAt DateTime   @default(now())
+  createdAt          DateTime            @default(now())
 
   @@index([userId])
 }
@@ -314,58 +326,58 @@ model LeadList {
 // are kept on Contact/Lead as a cached display string (mirroring companyRel.name)
 // so list views don't pay an extra join.
 model Company {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   name           String
   // Lowercased + de-suffixed for dedupe ("Stripe Inc." == "STRIPE").
   // Unique per user.
   normalizedName String
-  domain         String?  // primary email/web domain (e.g. "stripe.com")
+  domain         String? // primary email/web domain (e.g. "stripe.com")
   websiteUrl     String?
   linkedinUrl    String?
 
   // Firmographic
-  industry       String?
-  market         String?    // B2B | B2C | Marketplace | Public | Non-profit | ...
-  type           String?    // LLC | Corp | Public | Private | ...
-  size           String?    // '1-10' | '11-50' | '51-200' | ...
-  employeeCount  Int?
-  foundedYear    Int?
+  industry      String?
+  market        String? // B2B | B2C | Marketplace | Public | Non-profit | ...
+  type          String? // LLC | Corp | Public | Private | ...
+  size          String? // '1-10' | '11-50' | '51-200' | ...
+  employeeCount Int?
+  foundedYear   Int?
 
   // Geo
-  city           String?
-  state          String?
-  region         String?
-  country        String?    // ISO-2 ideally
+  city    String?
+  state   String?
+  region  String?
+  country String? // ISO-2 ideally
 
   // Tech / funding
-  technologies   String[]   @default([])
+  technologies      String[]  @default([])
   lastFundingDate   DateTime?
   lastFundingAmount Int?
   lastFundingStage  String?
 
   // Free-form
-  notes          String?    @db.Text
-  tags           String[]   @default([])
+  notes String?  @db.Text
+  tags  String[] @default([])
 
   // Denormalised aggregates — refreshed nightly via cron OR transactionally
   // by the create/delete sites in Iter 17.
-  contactCount   Int        @default(0)
-  leadCount      Int        @default(0)
+  contactCount   Int       @default(0)
+  leadCount      Int       @default(0)
   lastActivityAt DateTime?
 
   // Plan 5 — user-defined columns.
-  customFields   Json       @default("{}")
-  aiColumnRuns   Json       @default("{}")
+  customFields Json @default("{}")
+  aiColumnRuns Json @default("{}")
 
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  contacts       Contact[]
-  leads          Lead[]
-  activities     LeadActivity[]
+  contacts   Contact[]
+  leads      Lead[]
+  activities LeadActivity[]
 
   @@unique([userId, normalizedName])
   @@index([userId, name])
@@ -375,37 +387,37 @@ model Company {
 }
 
 model Lead {
-  id           String    @id @default(cuid())
-  leadListId   String
-  leadList     LeadList  @relation(fields: [leadListId], references: [id], onDelete: Cascade)
-  firstName    String
-  lastName     String?
-  email        String?
-  company      String?     // cached display string; mirrors companyRel.name when set
-  companyId    String?
-  companyRel   Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
-  linkedinUrl  String?
-  headline     String?
+  id            String    @id @default(cuid())
+  leadListId    String
+  leadList      LeadList  @relation(fields: [leadListId], references: [id], onDelete: Cascade)
+  firstName     String
+  lastName      String?
+  email         String?
+  company       String? // cached display string; mirrors companyRel.name when set
+  companyId     String?
+  companyRel    Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  linkedinUrl   String?
+  headline      String?
   // AI enrichment columns
-  companyNews  String?   @db.Text
-  challenges   String?   @db.Text
-  aiOpener     String?   @db.Text
-  aboutSection String?   @db.Text  // LinkedIn about section (scraped by extension)
-  recentPost   String?   @db.Text  // Most recent LinkedIn post text (scraped by extension)
-  status       String    @default("pending") // pending | in_progress | completed | replied | bounced
-  score         Int      @default(0)
-  openCount     Int      @default(0)
-  clickCount    Int      @default(0)
+  companyNews   String?   @db.Text
+  challenges    String?   @db.Text
+  aiOpener      String?   @db.Text
+  aboutSection  String?   @db.Text // LinkedIn about section (scraped by extension)
+  recentPost    String?   @db.Text // Most recent LinkedIn post text (scraped by extension)
+  status        String    @default("pending") // pending | in_progress | completed | replied | bounced
+  score         Int       @default(0)
+  openCount     Int       @default(0)
+  clickCount    Int       @default(0)
   lastOpenedAt  DateTime?
   lastClickedAt DateTime?
   phone         String?
-  tags          String[] @default([])
+  tags          String[]  @default([])
   // Plan 5 — user-defined columns.
-  customFields  Json     @default("{}")
-  aiColumnRuns  Json     @default("{}")
-  createdAt    DateTime  @default(now())
+  customFields  Json      @default("{}")
+  aiColumnRuns  Json      @default("{}")
+  createdAt     DateTime  @default(now())
 
-  campaignLeads        CampaignLead[]
+  campaignLeads          CampaignLead[]
   marketingCampaignSends MarketingCampaignSend[]
   activities             LeadActivity[]
 
@@ -435,23 +447,23 @@ model Task {
 // inbox sync, IMAP poller, tracking pixels, task lifecycle, status changes.
 // Designed for fast per-lead reads (timeline UI) AND per-company rollups.
 model LeadActivity {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Target — exactly one of leadId / contactId is typically set; companyId
   // is auto-resolved from the lead's or contact's companyId for cheap rollups.
-  leadId         String?
-  lead           Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  contactId      String?
-  contact        Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  companyId      String?
-  company        Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  leadId    String?
+  lead      Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  contactId String?
+  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   // What happened — see lib/activity.ts for the catalog
-  type           String   // 'email.sent' | 'email.opened' | 'email.replied' | 'email.bounced' | 'email.failed' | 'linkedin.invite_sent' | 'linkedin.message_sent' | 'linkedin.message_received' | 'task.created' | 'task.completed' | 'note.added' | 'status.changed' | 'signal.fired' | 'enrichment.completed' | …
-  channel        String?  // 'email' | 'linkedin' | 'sms' | 'call' | 'manual' | 'signal' | 'system'
-  source         String?  // 'campaign' | 'manual' | 'agent' | 'extension' | 'system'
+  type    String // 'email.sent' | 'email.opened' | 'email.replied' | 'email.bounced' | 'email.failed' | 'linkedin.invite_sent' | 'linkedin.message_sent' | 'linkedin.message_received' | 'task.created' | 'task.completed' | 'note.added' | 'status.changed' | 'signal.fired' | 'enrichment.completed' | …
+  channel String? // 'email' | 'linkedin' | 'sms' | 'call' | 'manual' | 'signal' | 'system'
+  source  String? // 'campaign' | 'manual' | 'agent' | 'extension' | 'system'
 
   // Provenance — all optional, populated where known
   campaignId     String?
@@ -461,12 +473,12 @@ model LeadActivity {
   taskId         String?
 
   // Human-readable line for the UI; payload carries structured extras
-  title          String
-  body           String?  @db.Text
-  payload        Json?
+  title   String
+  body    String? @db.Text
+  payload Json?
 
-  occurredAt     DateTime @default(now())
-  actorUserId    String?  // null = system / runner; set for explicit user actions
+  occurredAt  DateTime @default(now())
+  actorUserId String? // null = system / runner; set for explicit user actions
 
   @@index([userId, leadId, occurredAt(sort: Desc)])
   @@index([userId, contactId, occurredAt(sort: Desc)])
@@ -476,39 +488,39 @@ model LeadActivity {
 }
 
 model EmailEvent {
-  id           String   @id @default(cuid())
-  trackingId   String   // references EmailMessage.trackingId
-  leadId       String?
-  campaignId   String?
-  type         String   // opened | clicked | replied | bounced
-  url          String?  // for click events
-  createdAt    DateTime @default(now())
+  id         String   @id @default(cuid())
+  trackingId String // references EmailMessage.trackingId
+  leadId     String?
+  campaignId String?
+  type       String // opened | clicked | replied | bounced
+  url        String? // for click events
+  createdAt  DateTime @default(now())
 
   @@index([trackingId])
   @@index([leadId])
 }
 
 model Campaign {
-  id               String         @id @default(cuid())
-  userId           String
-  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name             String
-  sequenceId       String
-  sequence         Sequence       @relation(fields: [sequenceId], references: [id])
-  leadListId       String
-  leadList         LeadList       @relation(fields: [leadListId], references: [id])
-  status           String         @default("draft") // draft | active | paused | completed
-  launchedAt       DateTime?
-  timezone         String         @default("Asia/Kolkata")
-  sendWindow       Json           @default("[8,18]")  // [startHour, endHour] in local time — legacy cache
-  emailAccountIds  String[]       @default([])         // sender pool; empty -> falls back to isDefault
-  dailyEmailLimit  Int            @default(50)         // per-campaign cap (across the pool)
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  sequenceId      String
+  sequence        Sequence       @relation(fields: [sequenceId], references: [id])
+  leadListId      String
+  leadList        LeadList       @relation(fields: [leadListId], references: [id])
+  status          String         @default("draft") // draft | active | paused | completed
+  launchedAt      DateTime?
+  timezone        String         @default("Asia/Kolkata")
+  sendWindow      Json           @default("[8,18]") // [startHour, endHour] in local time — legacy cache
+  emailAccountIds String[]       @default([]) // sender pool; empty -> falls back to isDefault
+  dailyEmailLimit Int            @default(50) // per-campaign cap (across the pool)
   // Plan 7 — optional reusable Schedule. When set, isWithinSchedule wins over
   // the legacy timezone/sendWindow pair; runner reads either.
-  scheduleId       String?
-  schedule         Schedule?      @relation(fields: [scheduleId], references: [id], onDelete: SetNull)
-  createdAt        DateTime       @default(now())
-  leads            CampaignLead[]
+  scheduleId      String?
+  schedule        Schedule?      @relation(fields: [scheduleId], references: [id], onDelete: SetNull)
+  createdAt       DateTime       @default(now())
+  leads           CampaignLead[]
 
   @@index([userId])
 }
@@ -518,21 +530,21 @@ model Campaign {
 // Widget data is fetched on-demand by /api/dashboards/[id]/widgets/[widgetId]/data;
 // only the configs live here.
 model Dashboard {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   name        String
   description String?
-  tabs        Json     @default("[]")
-  filters     Json     @default("{}")  // global filter defaults (dateRange, campaignIds, etc.)
+  tabs        Json    @default("[]")
+  filters     Json    @default("{}") // global filter defaults (dateRange, campaignIds, etc.)
 
-  shareToken  String?  @unique         // null = not shared
-  sharedAt    DateTime?
-  position    Int      @default(0)
+  shareToken String?   @unique // null = not shared
+  sharedAt   DateTime?
+  position   Int       @default(0)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId, position])
 }
@@ -547,38 +559,38 @@ model Dashboard {
 //   rejected — user explicitly rejected
 //   expired  — older than 7 days (cleanup cron)
 model DraftMessage {
-  id              String   @id @default(cuid())
-  userId          String
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  channel         String   // 'email' | 'linkedin' | 'sms'
-  subject         String?  // null for chat-style channels
-  body            String   @db.Text
-  htmlBody        String?  @db.Text
+  channel  String // 'email' | 'linkedin' | 'sms'
+  subject  String? // null for chat-style channels
+  body     String  @db.Text
+  htmlBody String? @db.Text
 
-  conversationId  String?
-  leadId          String?
-  contactId       String?
-  campaignId      String?
-  sequenceStepId  String?
+  conversationId String?
+  leadId         String?
+  contactId      String?
+  campaignId     String?
+  sequenceStepId String?
 
-  status          String   @default("pending")
-  scheduledFor    DateTime?
-  approvedAt      DateTime?
-  rejectedAt      DateTime?
-  sentAt          DateTime?
-  sentMessageId   String?  // EmailMessage.id or LinkedInAction.id post-send
+  status        String    @default("pending")
+  scheduledFor  DateTime?
+  approvedAt    DateTime?
+  rejectedAt    DateTime?
+  sentAt        DateTime?
+  sentMessageId String? // EmailMessage.id or LinkedInAction.id post-send
 
-  createdByAi     Boolean  @default(true)
-  aiProvider      String?  // 'anthropic' | 'openai' | 'gemini'
-  aiModel         String?
-  aiPrompt        String?  @db.Text
-  source          String   @default("ai")  // 'ai' | 'sequence_manual' | 'manual_draft'
+  createdByAi Boolean @default(true)
+  aiProvider  String? // 'anthropic' | 'openai' | 'gemini'
+  aiModel     String?
+  aiPrompt    String? @db.Text
+  source      String  @default("ai") // 'ai' | 'sequence_manual' | 'manual_draft'
 
-  priority        Int      @default(0)
+  priority Int @default(0)
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId, status, scheduledFor])
   @@index([userId, status, priority(sort: Desc), createdAt(sort: Desc)])
@@ -590,26 +602,26 @@ model DraftMessage {
 // / Lead.customFields / Company.customFields), keyed by `CustomFieldDef.key`.
 // For type='ai', the per-row evaluation status lives in `aiColumnRuns[key]`.
 model CustomFieldDef {
-  id           String   @id @default(cuid())
+  id           String @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  entity       String   // 'lead' | 'contact' | 'company'
-  key          String   // machine name; /^[a-z][a-z0-9_]{0,30}$/
-  label        String   // display label
-  type         String   // 'text' | 'number' | 'date' | 'select' | 'multiselect' | 'url' | 'bool' | 'ai'
-  options      Json?    // ['Low','Med','High'] for select/multiselect
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entity       String // 'lead' | 'contact' | 'company'
+  key          String // machine name; /^[a-z][a-z0-9_]{0,30}$/
+  label        String // display label
+  type         String // 'text' | 'number' | 'date' | 'select' | 'multiselect' | 'url' | 'bool' | 'ai'
+  options      Json? // ['Low','Med','High'] for select/multiselect
   defaultValue Json?
 
   // AI-column-only fields
-  aiPrompt     String?  @db.Text  // template with {{firstName}} etc.
-  aiProvider   String?  // 'anthropic' | 'openai' | 'gemini'
-  aiModel      String?
-  aiMaxTokens  Int?     @default(200)
-  aiAutoRun    Boolean  @default(false)
+  aiPrompt    String? @db.Text // template with {{firstName}} etc.
+  aiProvider  String? // 'anthropic' | 'openai' | 'gemini'
+  aiModel     String?
+  aiMaxTokens Int?    @default(200)
+  aiAutoRun   Boolean @default(false)
 
-  position     Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, entity, key])
   @@index([userId, entity, position])
@@ -621,7 +633,7 @@ model Snippet {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  key       String   // slug, lowercase + underscores; insertable as /key
+  key       String // slug, lowercase + underscores; insertable as /key
   label     String
   body      String   @db.Text
   tags      String[] @default([])
@@ -636,18 +648,18 @@ model Snippet {
 // timezone+sendWindow inline pairs. Holiday support stored as JSON array of
 // { date: 'YYYY-MM-DD', label }.
 model Schedule {
-  id          String     @id @default(cuid())
+  id          String   @id @default(cuid())
   userId      String
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
-  timezone    String     // IANA, e.g. 'Asia/Kolkata'
-  weeklyHours Json       @default("{}")  // { mon: [[9,18]], tue: [[9,18]], ... }
-  holidays    Json       @default("[]")  // [{ date: 'YYYY-MM-DD', label }]
-  isDefault   Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  timezone    String // IANA, e.g. 'Asia/Kolkata'
+  weeklyHours Json     @default("{}") // { mon: [[9,18]], tue: [[9,18]], ... }
+  holidays    Json     @default("[]") // [{ date: 'YYYY-MM-DD', label }]
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  campaigns   Campaign[]
+  campaigns Campaign[]
 
   @@index([userId])
 }
@@ -658,7 +670,7 @@ model ConversationLabel {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  key       String   // 'interested' | 'not_interested' | 'out_of_office' | 'favorite' | 'meeting_booked' | <custom>
+  key       String // 'interested' | 'not_interested' | 'out_of_office' | 'favorite' | 'meeting_booked' | <custom>
   label     String
   color     String   @default("#888")
   builtIn   Boolean  @default(false)
@@ -705,7 +717,7 @@ model CampaignLead {
   lastError     String?
   lastAttemptAt DateTime?
   autoStopped   Boolean   @default(false)
-  stoppedReason String?   // 'reply' | 'unsubscribe' | 'bounce' | 'manual'
+  stoppedReason String? // 'reply' | 'unsubscribe' | 'bounce' | 'manual'
   createdAt     DateTime  @default(now())
 
   @@unique([campaignId, leadId])
@@ -721,7 +733,7 @@ model LinkedInAction {
   leadId         String?
   profileId      String
   profileUrl     String?
-  actionType     String    // visit_profile | connection_request | chat_message
+  actionType     String // visit_profile | connection_request | chat_message
   message        String?   @db.Text
   status         String    @default("pending") // pending | picked_up | done | failed
   pickedUpAt     DateTime?
@@ -762,53 +774,53 @@ model WebhookDelivery {
 }
 
 model MarketingCampaign {
-  id              String    @id @default(cuid())
-  userId          String
-  name            String
-  subject         String
-  htmlBody        String    @db.Text
-  fromName        String
-  emailAccountId  String
-  status          String    @default("draft") // draft | scheduled | sending | sent | paused
-  scheduledAt     DateTime?
-  sentAt          DateTime?
-  recipientListId String
-  stats                Json      @default("{}")
-  abEnabled            Boolean   @default(false)
-  abSubjectB           String?
-  abSplitPercent       Int       @default(20)
-  abWinnerMetric       String    @default("open")
-  abTestDurationHours  Int       @default(4)
-  abWinner             String?
-  abWinnerSentAt       DateTime?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  emailAccount    EmailAccount @relation(fields: [emailAccountId], references: [id])
-  leadList        LeadList  @relation(fields: [recipientListId], references: [id])
-  sends           MarketingCampaignSend[]
+  id                  String                  @id @default(cuid())
+  userId              String
+  name                String
+  subject             String
+  htmlBody            String                  @db.Text
+  fromName            String
+  emailAccountId      String
+  status              String                  @default("draft") // draft | scheduled | sending | sent | paused
+  scheduledAt         DateTime?
+  sentAt              DateTime?
+  recipientListId     String
+  stats               Json                    @default("{}")
+  abEnabled           Boolean                 @default(false)
+  abSubjectB          String?
+  abSplitPercent      Int                     @default(20)
+  abWinnerMetric      String                  @default("open")
+  abTestDurationHours Int                     @default(4)
+  abWinner            String?
+  abWinnerSentAt      DateTime?
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailAccount        EmailAccount            @relation(fields: [emailAccountId], references: [id])
+  leadList            LeadList                @relation(fields: [recipientListId], references: [id])
+  sends               MarketingCampaignSend[]
 
   @@index([userId])
 }
 
 model MarketingCampaignSend {
-  id               String    @id @default(cuid())
-  campaignId       String
-  leadId           String
-  leadEmail        String
-  status           String    @default("pending") // pending | sent | delivered | bounced | complained | failed
-  trackingId       String    @unique @default(cuid())
-  sesMessageId     String?   // SES MessageId — correlates SNS bounce/complaint/delivery events
-  sentAt           DateTime?
-  deliveredAt      DateTime?
-  openedAt         DateTime?
-  clickedAt        DateTime?
-  complainedAt     DateTime?
-  unsubscribedAt   DateTime?
-  abVariant        String?
-  createdAt        DateTime  @default(now())
-  campaign         MarketingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  lead             Lead      @relation(fields: [leadId], references: [id])
+  id             String            @id @default(cuid())
+  campaignId     String
+  leadId         String
+  leadEmail      String
+  status         String            @default("pending") // pending | sent | delivered | bounced | complained | failed
+  trackingId     String            @unique @default(cuid())
+  sesMessageId   String? // SES MessageId — correlates SNS bounce/complaint/delivery events
+  sentAt         DateTime?
+  deliveredAt    DateTime?
+  openedAt       DateTime?
+  clickedAt      DateTime?
+  complainedAt   DateTime?
+  unsubscribedAt DateTime?
+  abVariant      String?
+  createdAt      DateTime          @default(now())
+  campaign       MarketingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  lead           Lead              @relation(fields: [leadId], references: [id])
 
   @@index([campaignId])
   @@index([trackingId])
@@ -827,48 +839,48 @@ model Unsubscribe {
 }
 
 model WarmupAccount {
-  id              String    @id @default(cuid())
-  userId          String
-  emailAccountId  String    @unique
-  status          String    @default("active")
-  dailyTarget     Int       @default(5)
-  currentDay      Int       @default(0)
-  totalSent       Int       @default(0)
-  totalReceived   Int       @default(0)
-  totalReplied    Int       @default(0)
-  startedAt       DateTime  @default(now())
-  lastRunAt       DateTime?
-  createdAt       DateTime  @default(now())
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  emailAccount    EmailAccount @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
-  sentEmails      WarmupEmail[]
+  id             String        @id @default(cuid())
+  userId         String
+  emailAccountId String        @unique
+  status         String        @default("active")
+  dailyTarget    Int           @default(5)
+  currentDay     Int           @default(0)
+  totalSent      Int           @default(0)
+  totalReceived  Int           @default(0)
+  totalReplied   Int           @default(0)
+  startedAt      DateTime      @default(now())
+  lastRunAt      DateTime?
+  createdAt      DateTime      @default(now())
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailAccount   EmailAccount  @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
+  sentEmails     WarmupEmail[]
 
   @@index([userId])
 }
 
 model WarmupEmail {
-  id              String    @id @default(cuid())
+  id              String        @id @default(cuid())
   warmupAccountId String
   direction       String
   fromEmail       String
   toEmail         String
   subject         String
-  body            String    @db.Text
+  body            String        @db.Text
   messageId       String?
-  replied         Boolean   @default(false)
+  replied         Boolean       @default(false)
   repliedAt       DateTime?
-  sentAt          DateTime  @default(now())
+  sentAt          DateTime      @default(now())
   warmupAccount   WarmupAccount @relation(fields: [warmupAccountId], references: [id], onDelete: Cascade)
 
   @@index([warmupAccountId])
 }
 
 model Workspace {
-  id        String    @id @default(cuid())
+  id        String            @id @default(cuid())
   name      String
   ownerId   String
-  createdAt DateTime  @default(now())
-  owner     User      @relation("OwnedWorkspaces", fields: [ownerId], references: [id])
+  createdAt DateTime          @default(now())
+  owner     User              @relation("OwnedWorkspaces", fields: [ownerId], references: [id])
   members   WorkspaceMember[]
   invites   WorkspaceInvite[]
 }
@@ -902,24 +914,24 @@ model WorkspaceInvite {
 }
 
 model CapturedPost {
-  id            String   @id @default(cuid())
-  userId        String
-  profileId     String   // LinkedIn username slug, e.g. "neil-borate-1a435a57"
-  profileName   String
-  profileUrl    String?
-  postText      String   @db.Text
-  postUrl       String?
-  postedAt      String?  // raw date string from LinkedIn DOM
-  likes         Int?
-  comments      Int?
+  id             String   @id @default(cuid())
+  userId         String
+  profileId      String // LinkedIn username slug, e.g. "neil-borate-1a435a57"
+  profileName    String
+  profileUrl     String?
+  postText       String   @db.Text
+  postUrl        String?
+  postedAt       String? // raw date string from LinkedIn DOM
+  likes          Int?
+  comments       Int?
   // AI-generated repurposed variants
   twitterThread  String?  @db.Text
   linkedinRepost String?  @db.Text
   newsletter     String?  @db.Text
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, profileId])
   @@index([userId, createdAt])
@@ -942,16 +954,16 @@ model IssueReport {
 }
 
 model Watchlist {
-  id          String   @id @default(cuid())
+  id          String            @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
-  signalType  String   // 'job_change' | 'linkedin_engagement' | 'funding' | 'hiring' | 'website_visit' | 'custom'
+  signalType  String // 'job_change' | 'linkedin_engagement' | 'funding' | 'hiring' | 'website_visit' | 'custom'
   description String?
-  config      Json     @default("{}")
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  config      Json              @default("{}")
+  active      Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   signals     WatchlistSignal[]
 
   @@index([userId, active])
@@ -989,9 +1001,9 @@ model PhoneNumber {
 }
 
 model Call {
-  id            String      @id @default(cuid())
+  id            String       @id @default(cuid())
   userId        String
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   leadId        String?
   contactId     String?
   campaignId    String?
@@ -999,14 +1011,14 @@ model Call {
   phoneNumber   PhoneNumber? @relation(fields: [phoneNumberId], references: [id], onDelete: SetNull)
   fromNumber    String?
   toNumber      String
-  direction     String      @default("outbound") // outbound | inbound
-  status        String      @default("completed") // completed | no_answer | failed | voicemail
+  direction     String       @default("outbound") // outbound | inbound
+  status        String       @default("completed") // completed | no_answer | failed | voicemail
   durationSec   Int?
-  notes         String?     @db.Text
-  outcome       String?     // 'interested' | 'not_interested' | 'callback' | 'wrong_number' | 'left_voicemail'
-  startedAt     DateTime    @default(now())
+  notes         String?      @db.Text
+  outcome       String? // 'interested' | 'not_interested' | 'callback' | 'wrong_number' | 'left_voicemail'
+  startedAt     DateTime     @default(now())
   endedAt       DateTime?
-  createdAt     DateTime    @default(now())
+  createdAt     DateTime     @default(now())
 
   @@index([userId, startedAt(sort: Desc)])
 }
@@ -1016,13 +1028,13 @@ model MeetingPage {
   id          String    @id @default(cuid())
   userId      String    @unique
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  slug        String    @unique   // URL slug — outreachai.in/meet/{slug}
+  slug        String    @unique // URL slug — outreachai.in/meet/{slug}
   title       String    @default("Book a meeting")
   description String?   @db.Text
-  duration    Int       @default(30)    // minutes: 15 | 30 | 45 | 60
+  duration    Int       @default(30) // minutes: 15 | 30 | 45 | 60
   timezone    String    @default("Asia/Kolkata")
-  weeklyHours Json      @default("{}")  // { mon:[[9,17]], tue:[[9,17]], ... } 24h
-  bufferMins  Int       @default(15)    // gap between bookings
+  weeklyHours Json      @default("{}") // { mon:[[9,17]], tue:[[9,17]], ... } 24h
+  bufferMins  Int       @default(15) // gap between bookings
   active      Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -1040,7 +1052,7 @@ model Booking {
   startAt       DateTime
   endAt         DateTime
   notes         String?     @db.Text
-  status        String      @default("confirmed")  // confirmed | cancelled
+  status        String      @default("confirmed") // confirmed | cancelled
   cancelToken   String      @unique @default(cuid())
   createdAt     DateTime    @default(now())
 
@@ -1063,41 +1075,41 @@ model Pipeline {
 }
 
 model PipelineStage {
-  id          String    @id @default(cuid())
+  id          String   @id @default(cuid())
   pipelineId  String
-  pipeline    Pipeline  @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  pipeline    Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
   name        String
   position    Int
-  probability Int       @default(50)
-  type        String    @default("open")
-  color       String    @default("#6366f1")
+  probability Int      @default(50)
+  type        String   @default("open")
+  color       String   @default("#6366f1")
   deals       Deal[]
 
   @@index([pipelineId, position])
 }
 
 model Deal {
-  id          String        @id @default(cuid())
+  id          String         @id @default(cuid())
   userId      String
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   pipelineId  String
-  pipeline    Pipeline      @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  pipeline    Pipeline       @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
   stageId     String
-  stage       PipelineStage @relation(fields: [stageId], references: [id])
+  stage       PipelineStage  @relation(fields: [stageId], references: [id])
   title       String
   value       Float?
-  currency    String        @default("USD")
+  currency    String         @default("USD")
   closeDate   DateTime?
   probability Int?
-  description String?       @db.Text
+  description String?        @db.Text
   lostReason  String?
   contactId   String?
   companyId   String?
-  status      String        @default("open")
+  status      String         @default("open")
   wonAt       DateTime?
   lostAt      DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   activities  DealActivity[]
 
   @@index([userId, stageId])
@@ -1144,17 +1156,17 @@ model Workflow {
 }
 
 model WorkflowRun {
-  id          String   @id @default(cuid())
-  workflowId  String
-  workflow    Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  userId      String
-  entityId    String?
-  entityType  String?
-  result      String   // 'success' | 'skipped' | 'error'
-  error       String?
-  actionsRun  Int      @default(0)
-  payload     Json?
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  workflowId String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  userId     String
+  entityId   String?
+  entityType String?
+  result     String // 'success' | 'skipped' | 'error'
+  error      String?
+  actionsRun Int      @default(0)
+  payload    Json?
+  createdAt  DateTime @default(now())
 
   @@index([workflowId, createdAt(sort: Desc)])
   @@index([userId, createdAt(sort: Desc)])
@@ -1166,11 +1178,299 @@ model DeliverabilityAlert {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  metric    String   // 'bounce_rate' | 'open_rate' | 'reply_rate' | 'score'
-  condition String   // 'below' | 'above'
-  threshold Float    // e.g. 5.0 for 5%
+  metric    String // 'bounce_rate' | 'open_rate' | 'reply_rate' | 'score'
+  condition String // 'below' | 'above'
+  threshold Float // e.g. 5.0 for 5%
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
+// Prosperr Sales CRM (PRD v1) — team-shared, account-centric.
+// Unlike the OutreachAI models above these are NOT scoped by userId: visibility
+// is decided by lib/prosperr/rbac.ts (prospecting zone private to the BDR,
+// pipeline zone from L1 booking open to everyone).
+// Enum-like columns are strings; allowed values live in lib/prosperr/constants.ts.
+// ═════════════════════════════════════════════════════════════════════════════
+
+model CrmAccount {
+  id               String  @id @default(cuid())
+  name             String
+  normalizedName   String  @unique // dedupe key: lower-case, suffixes stripped
+  domain           String? @unique // dedupe key
+  website          String?
+  linkedinUrl      String?
+  industry         String?
+  subIndustry      String?
+  city             String?
+  employeeCount    Int?
+  licensePotential Int? // size bucket is computed from this
+  leadSource       String?
+
+  stage        String  @default("PROSPECT") // PROSPECT … IMPLEMENTATION
+  status       String  @default("ACTIVE") // ACTIVE | INACTIVE
+  zone         String  @default("PROSPECTING") // PROSPECTING | PIPELINE
+  icpFit       String? // YES | NO
+  intent       String? // HIGH | MEDIUM | LOW
+  intentReason String?
+
+  inactiveReason          String?
+  inactiveRemark          String?
+  inactiveAt              DateTime?
+  revisitAt               DateTime?
+  lastStageBeforeInactive String?
+
+  nextStep       String?
+  nextStepAt     DateTime?
+  lastActivityAt DateTime?
+  l1BookedAt     DateTime?
+
+  aeOwnerId   String?
+  aeOwner     User?   @relation("AccountAe", fields: [aeOwnerId], references: [id], onDelete: SetNull)
+  sqlBdrId    String? // BDR credited with the SQL / L1 booking
+  sqlBdr      User?   @relation("AccountSqlBdr", fields: [sqlBdrId], references: [id], onDelete: SetNull)
+  createdById String
+  createdBy   User    @relation("AccountCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stakeholders Stakeholder[]
+  activities   CrmActivity[]
+  tasks        CrmTask[]
+  meetings     CrmMeeting[]
+  opportunity  Opportunity?
+  sqlRecords   SqlRecord[]
+  assignments  AssignmentHistory[]
+  auditLogs    AuditLog[]
+
+  @@index([stage])
+  @@index([status])
+  @@index([zone])
+  @@index([aeOwnerId])
+  @@index([revisitAt])
+}
+
+model Stakeholder {
+  id                String        @id @default(cuid())
+  accountId         String
+  account           CrmAccount    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  firstName         String
+  lastName          String?
+  designation       String?
+  department        String        @default("OTHER") // FINANCE | HR | PAYROLL | OTHER
+  level             String? // L1–L5 from DesignationLevel; null = unmapped
+  priorityRank      Int           @default(8) // 1 CFO … 8 Other
+  role              String? // DECISION_MAKER | ECONOMIC_BUYER | INFLUENCER | EXECUTOR
+  rightPoc          Boolean       @default(false)
+  primarySpoc       Boolean       @default(false)
+  emails            String[]      @default([])
+  phones            Json          @default("[]") // [{ number, invalid }]
+  linkedinUrl       String?
+  engagement        String        @default("NOT_CONTACTED")
+  connectionType    String? // DIRECT_SENIOR | JUNIOR_VIA_SENIOR | DIRECT_JUNIOR
+  referredById      String?
+  referredBy        Stakeholder?  @relation("Referral", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals         Stakeholder[] @relation("Referral")
+  doNotContact      Boolean       @default(false)
+  callAttempts      Int           @default(0)
+  lastInteractionAt DateTime?
+  nextFollowUpAt    DateTime?
+  bdrOwnerId        String?
+  bdrOwner          User?         @relation("StakeholderBdr", fields: [bdrOwnerId], references: [id], onDelete: SetNull)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  activities  CrmActivity[]
+  tasks       CrmTask[]
+  enrollments SequenceEnrollment[]
+
+  @@index([accountId])
+  @@index([bdrOwnerId])
+  @@index([linkedinUrl])
+}
+
+model CrmActivity {
+  id            String       @id @default(cuid())
+  accountId     String
+  account       CrmAccount   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  stakeholderId String?
+  stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id], onDelete: SetNull)
+  type          String // CALL | EMAIL | WHATSAPP | LINKEDIN | VISIT | NOTE | MEETING | STATUS_CHANGE | REFERRAL
+  outcome       String? // call outcome key (constants.CALL_OUTCOMES)
+  remark        String?      @db.Text
+  zone          String       @default("PROSPECTING") // zone at the time it was logged
+  occurredAt    DateTime     @default(now())
+  loggedById    String
+  loggedBy      User         @relation("ActivityLoggedBy", fields: [loggedById], references: [id])
+  createdAt     DateTime     @default(now())
+
+  @@index([accountId, occurredAt])
+  @@index([stakeholderId])
+  @@index([loggedById, occurredAt])
+}
+
+model CrmTask {
+  id            String       @id @default(cuid())
+  accountId     String?
+  account       CrmAccount?  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  stakeholderId String?
+  stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id], onDelete: SetNull)
+  type          String       @default("CALL") // CALL | EMAIL | FOLLOW_UP | RESCHEDULE | MEETING_OUTCOME | REVIVAL | CUSTOM
+  title         String
+  dueAt         DateTime
+  status        String       @default("OPEN") // OPEN | DONE | CANCELLED
+  source        String       @default("MANUAL") // RULE | MANUAL
+  assigneeId    String
+  assignee      User         @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  createdById   String?
+  completedAt   DateTime?
+  createdAt     DateTime     @default(now())
+
+  @@index([assigneeId, status, dueAt])
+  @@index([accountId])
+}
+
+model CrmMeeting {
+  id             String     @id @default(cuid())
+  accountId      String
+  account        CrmAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  levels         String[] // ["L1"] or ["L1","L2"] — one meeting may cover two stages
+  stakeholderIds String[]   @default([])
+  bookedAt       DateTime   @default(now())
+  bookedById     String
+  bookedBy       User       @relation("MeetingBookedBy", fields: [bookedById], references: [id])
+  scheduledFor   DateTime
+  status         String     @default("SCHEDULED") // SCHEDULED | RESCHEDULED | COMPLETED | NO_SHOW | CANCELLED
+  outcome        String?
+  notes          String?    @db.Text
+  nextStep       String?
+  checklist      Json       @default("{}") // { itemKey: true }
+  exitStepDone   Boolean    @default(false) // L1: documents shared · L2: commercials sent
+  exitStepLink   String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@index([accountId, scheduledFor])
+  @@index([status, scheduledFor])
+}
+
+model Opportunity {
+  id                    String     @id @default(cuid())
+  accountId             String     @unique
+  account               CrmAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  temperature           String? // HOT | WARM | COLD
+  temperatureHistory    Json       @default("[]") // [{ value, at, by }]
+  expectedMrr           Int? // ₹ per month
+  licenseCount          Int?
+  stagnationReason      String?
+  closeDate             DateTime?
+  outcome               String? // WON | LOST
+  lostReason            String?
+  implementationStarted Boolean    @default(false)
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+}
+
+model SqlRecord {
+  id                String     @id @default(cuid())
+  accountId         String
+  account           CrmAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  status            String     @default("PENDING_QUALIFICATION")
+  criteria          Json       @default("{}") // snapshot of the ICP judge at submit time
+  bant              Json       @default("{}") // { budget, authority, need, timeline } each { value, note }
+  businessRelevance String? // FBP | PAYROLL | BOTH
+  connectionType    String?
+  smallException    Boolean    @default(false)
+  smallReason       String?
+  rejectionReason   String?
+  originalValues    Json? // BDR's values, kept when the AE corrects them after L1 (M4-9)
+  submittedById     String
+  submittedAt       DateTime   @default(now())
+  validatedById     String?
+  validatedAt       DateTime?
+
+  @@index([accountId])
+  @@index([status])
+}
+
+model AssignmentHistory {
+  id        String     @id @default(cuid())
+  accountId String
+  account   CrmAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  fromAeId  String?
+  toAeId    String
+  byId      String
+  reason    String?
+  at        DateTime   @default(now())
+
+  @@index([accountId])
+  @@index([toAeId])
+}
+
+model SequenceEnrollment {
+  id             String      @id @default(cuid())
+  stakeholderId  String
+  stakeholder    Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
+  sequenceKey    String      @default("DEFAULT")
+  step           String      @default("INTRO") // INTRO | FOLLOWUP1 | FOLLOWUP2 | REMINDER
+  status         String      @default("RUNNING") // RUNNING | PAUSED | COMPLETED | STOPPED
+  lastSentAt     DateTime?
+  nextSendAt     DateTime?
+  threadId       String?
+  stopReason     String? // REPLY | BOUNCE | OPT_OUT | L1_BOOKED | MANUAL | COMPLETED
+  fromMissedCall Boolean     @default(false)
+  startedById    String
+  startedAt      DateTime    @default(now())
+
+  @@index([stakeholderId])
+  @@index([status, nextSendAt])
+}
+
+model SalesTarget {
+  id          String   @id @default(cuid())
+  userId      String
+  period      String // WEEK | MONTH | QUARTER
+  periodStart DateTime
+  metric      String // L1_BOOKED | L1_DONE | L2 | L3 | WON | MRR
+  value       Int
+  setById     String
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, period, periodStart, metric])
+}
+
+model DesignationLevel {
+  id                String  @id @default(cuid())
+  title             String  @unique
+  normalized        String  @unique
+  level             String // L1–L5
+  department        String // FINANCE | HR | PAYROLL | OTHER
+  priorityRank      Int     @default(8)
+  rightPoc          Boolean @default(true)
+  rightPocLargeOnly Boolean @default(false) // right POC only for Large / Enterprise accounts
+}
+
+model CrmSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  entity    String // ACCOUNT | STAKEHOLDER | OPPORTUNITY | SQL | MEETING
+  entityId  String
+  accountId String?
+  account   CrmAccount? @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  field     String
+  oldValue  String?
+  newValue  String?
+  actorId   String
+  at        DateTime    @default(now())
+
+  @@index([accountId, at])
+  @@index([entity, entityId])
 }

@@ -28,7 +28,8 @@
     "test:critical:show-report": "playwright show-report playwright-report",
     "test:all-flows": "playwright test --config playwright.config.ts tests/e2e/all-flows.spec.ts",
     "test:all-flows:prod": "PLAYWRIGHT_BASE_URL=https://outreachai.in playwright test --config playwright.config.ts tests/e2e/all-flows.spec.ts",
-    "db:migrate:prod": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/migrate-prod.ts"
+    "db:migrate:prod": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/migrate-prod.ts",
+    "db:seed:prosperr": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed-prosperr.ts"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

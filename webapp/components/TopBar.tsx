@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState, useRef } from 'react'
-import { Bug, ChevronDown, Building2, User, Menu } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Bug, Menu } from 'lucide-react'
+import RoleSwitcher from '@/components/prosperr/RoleSwitcher'
 import { ProsperrLogo } from '@/components/ProsperrLogo'
 
 interface Tab {
@@ -13,7 +14,7 @@ interface Tab {
 }
 
 const TABS: Tab[] = [
-  { label: 'Accounts', href: '/companies' },
+  { label: 'Accounts', href: '/accounts' },
   { label: 'Pipeline', href: '/pipeline' },
   { label: 'Meetings', href: '/bookings' },
   { label: 'Dashboards', href: '/dashboards' },
@@ -26,97 +27,9 @@ function todayIST() {
   }).format(new Date())
 }
 
-interface WorkspaceEntry {
-  id: string
-  name: string
-  role: string
-}
-
 interface TopBarProps {
   activePath: string
   onMenuClick?: () => void
-}
-
-function WorkspaceSwitcher() {
-  const [open, setOpen] = useState(false)
-  const [activeWorkspace, setActiveWorkspace] = useState<WorkspaceEntry | null>(null)
-  const [workspaces, setWorkspaces] = useState<WorkspaceEntry[]>([])
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    Promise.all([
-      fetch('/api/settings/profile').then((r) => (r.ok ? r.json() : null)),
-      fetch('/api/workspaces').then((r) => (r.ok ? r.json() : null)),
-    ]).then(([profile, data]) => {
-      if (!data) return
-      const all: WorkspaceEntry[] = [
-        ...(data.owned ?? []).map((w: WorkspaceEntry) => ({ ...w, role: 'owner' })),
-        ...(data.member ?? []),
-      ]
-      setWorkspaces(all)
-      if (profile?.workspaceId) {
-        const found = all.find((w) => w.id === profile.workspaceId)
-        setActiveWorkspace(found ?? null)
-      }
-    })
-  }, [])
-
-  useEffect(() => {
-    function handler(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
-
-  async function switchTo(id: string | 'personal') {
-    // The [id]/switch route accepts "personal" as a special id to clear active workspace
-    await fetch(`/api/workspaces/${id}/switch`, { method: 'POST' })
-    if (id === 'personal') {
-      setActiveWorkspace(null)
-    } else {
-      const found = workspaces.find((w) => w.id === id) ?? null
-      setActiveWorkspace(found)
-    }
-    setOpen(false)
-    window.location.reload()
-  }
-
-  return (
-    <div ref={ref} className="relative flex-shrink-0">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700"
-      >
-        {activeWorkspace ? <Building2 className="w-3.5 h-3.5 flex-shrink-0" /> : <User className="w-3.5 h-3.5 flex-shrink-0" />}
-        <span className="max-w-[120px] truncate">{activeWorkspace?.name ?? 'Personal'}</span>
-        <ChevronDown className="w-3 h-3 text-gray-400 flex-shrink-0" />
-      </button>
-
-      {open && (
-        <div className="absolute top-full left-0 mt-1 w-52 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden py-1">
-          <button
-            onClick={() => switchTo('personal')}
-            className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${!activeWorkspace ? 'font-semibold text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}`}
-          >
-            <User className="w-4 h-4 flex-shrink-0" />
-            <span className="truncate">Personal</span>
-          </button>
-          {workspaces.length > 0 && <div className="h-px bg-gray-100 dark:bg-gray-800 my-1" />}
-          {workspaces.map((ws) => (
-            <button
-              key={ws.id}
-              onClick={() => switchTo(ws.id)}
-              className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${activeWorkspace?.id === ws.id ? 'font-semibold text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}`}
-            >
-              <Building2 className="w-4 h-4 flex-shrink-0" />
-              <span className="flex-1 truncate text-left">{ws.name}</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  )
 }
 
 export default function TopBar({ activePath, onMenuClick }: TopBarProps) {
@@ -183,7 +96,7 @@ export default function TopBar({ activePath, onMenuClick }: TopBarProps) {
         })}
       </nav>
 
-      <WorkspaceSwitcher />
+      <RoleSwitcher />
 
       <span className="hidden lg:inline text-xs font-medium text-gray-500 dark:text-gray-400 tabular-nums whitespace-nowrap px-2">
         {todayIST()} · IST

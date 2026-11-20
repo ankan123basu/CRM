@@ -44,7 +44,7 @@ const NAV_TOP: NavItemDef[] = [
 ]
 
 const NAV_PROSPECT: NavItemDef[] = [
-  { href: '/companies', label: 'Accounts', icon: Building2 },
+  { href: '/accounts', label: 'Accounts', icon: Building2 },
   { href: '/contacts', label: 'Stakeholders', icon: User },
   { href: '/calls', label: 'Calls', icon: Phone },
   { href: '/sequences', label: 'Email Sequences', icon: GitBranch },
