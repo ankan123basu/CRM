@@ -142,7 +142,7 @@ export default function HomePage() {
         </div>
         <div className="rounded-[1.75rem] bg-white dark:bg-gray-900 p-5 md:p-6 overflow-x-auto">
           <ol className="grid grid-cols-8 gap-2 min-w-[880px]">
-            {FUNNEL.map((s, i) => {
+            {FUNNEL.map((s) => {
               const n = data.byStage[s] ?? 0
               const highlight = s === 'L1'
               return (
