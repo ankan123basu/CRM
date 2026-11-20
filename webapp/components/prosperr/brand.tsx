@@ -44,7 +44,7 @@ export function Topo({ seed = 1, rings = 7, className, tone = 'dark' }: { seed?:
   return (
     <svg aria-hidden viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid slice" className={cn('absolute inset-0 w-full h-full pointer-events-none', className)}>
       {contourPaths(seed, rings, w, h).map((d, i) => (
-        <path key={i} d={d} fill="none" stroke={tone === 'dark' ? '#0d0d0d' : '#ffffff'} strokeOpacity={tone === 'dark' ? 0.09 : 0.12} strokeWidth={1.2} />
+        <path key={i} d={d} fill="none" stroke={tone === 'dark' ? '#0d0d0d' : '#ffffff'} strokeOpacity={tone === 'dark' ? 0.09 : 0.06} strokeWidth={1.2} />
       ))}
     </svg>
   )
@@ -61,7 +61,7 @@ export function Sparkle({ className }: { className?: string }) {
 /** Big Prosperr headline: `children` in near-black, `muted` continues in grey. */
 export function Headline({ children, muted, as: Tag = 'h1', className }: { children: React.ReactNode; muted?: React.ReactNode; as?: 'h1' | 'h2'; className?: string }) {
   return (
-    <Tag className={cn('font-display font-semibold tracking-[-0.035em] leading-[1.02] text-[#0d0d0d] dark:text-white text-balance', className)}>
+    <Tag className={cn('font-display font-medium tracking-[-0.035em] leading-[1.05] text-[#101312] dark:text-white text-balance', className)}>
       {children}
       {muted && <> <span className="text-[#a1a1aa]">{muted}</span></>}
     </Tag>
@@ -71,7 +71,7 @@ export function Headline({ children, muted, as: Tag = 'h1', className }: { child
 /** Grey rounded panel with contour lines and a centred dark-green icon. */
 export function IconPanel({ children, seed = 1, className }: { children: React.ReactNode; seed?: number; className?: string }) {
   return (
-    <div className={cn('relative overflow-hidden rounded-[1.5rem] bg-[#efefef] dark:bg-gray-800 flex items-center justify-center text-[#0a4a1f]', className)}>
+    <div className={cn('relative overflow-hidden rounded-[1.5rem] bg-[#efefef] dark:bg-gray-800 flex items-center justify-center text-[#053f1a]', className)}>
       <Topo seed={seed} />
       <div className="relative">{children}</div>
     </div>
@@ -88,20 +88,23 @@ export function Tag({ children, className }: { children: React.ReactNode; classN
 }
 
 /** Primary dark-green pill with ↗, like "Log In / Sign Up ↗". */
-export function PillLink({ href, children, variant = 'primary', className }: { href: string; children: React.ReactNode; variant?: 'primary' | 'outline' | 'white'; className?: string }) {
+export function PillLink({ href, children, variant = 'primary', className, arrow = true }: { href: string; children: React.ReactNode; variant?: 'primary' | 'outline' | 'white' | 'hero' | 'ghost-dark'; className?: string; arrow?: boolean }) {
   return (
     <Link
       href={href}
       className={cn(
         'inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors',
-        variant === 'primary' && 'bg-[#0a4a1f] text-[#ffffff] hover:bg-[#053f1a]',
+        variant === 'primary' && 'bg-[#053f1a] text-[#ffffff] hover:bg-[#0a5a26]',
         variant === 'outline' && 'border border-[#0d0d0d] text-[#0d0d0d] hover:bg-[#0d0d0d] hover:text-[#ffffff] dark:border-gray-300 dark:text-gray-100',
-        variant === 'white' && 'bg-[#ffffff] text-[#0a4a1f] hover:bg-[#f3f3f5]',
+        variant === 'white' && 'bg-[#ffffff] text-[#053f1a] hover:bg-[#efefef]',
+        // On dark heroes, like "Book A Demo Call ↗" / "View Plans" on prosperr.io
+        variant === 'hero' && 'bg-[#053f1a] text-[#ffffff] border-2 border-[#ffffff]/55 hover:bg-[#0a5a26] px-6 py-3 text-base',
+        variant === 'ghost-dark' && 'border border-[#ffffff]/35 text-[#efefef] hover:bg-[#ffffff]/10 px-6 py-3 text-base',
         className
       )}
     >
       {children}
-      <ArrowUpRight className="w-4 h-4" />
+      {arrow && <ArrowUpRight className="w-4 h-4" />}
     </Link>
   )
 }
@@ -113,5 +116,50 @@ export function ArrowPill({ href, children, className }: { href: string; childre
       {children}
       <span className="w-8 h-8 rounded-full bg-[#0d0d0d] text-[#ffffff] flex items-center justify-center"><ArrowRight className="w-4 h-4" /></span>
     </Link>
+  )
+}
+
+/** Dark-green strip above the header, like prosperr.io's "Earn rewards worth up to ₹1.5L ↗". */
+export function AnnouncementBar({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-[#053f1a] text-[#efefef] text-sm font-medium text-center px-4 py-2.5">
+      {children}
+    </div>
+  )
+}
+
+/** Uppercase tracked label, as above the stats and "PROSPERR ONE". */
+export function Eyebrow({ children, className, tone = 'dark' }: { children: React.ReactNode; className?: string; tone?: 'dark' | 'light' }) {
+  return (
+    <p className={cn('text-xs sm:text-sm font-medium uppercase tracking-[0.12em]', tone === 'dark' ? 'text-[#56645a] dark:text-gray-400' : 'text-[#c4cbc6]', className)}>
+      {children}
+    </p>
+  )
+}
+
+/**
+ * prosperr.io's stats block: a 2-column grid separated by 1px divider lines,
+ * centred uppercase labels and large Bricolage numbers.
+ */
+export function StatsGrid({ items }: { items: { label: string; value: React.ReactNode; accent?: boolean; href?: string; tone?: 'bad' | 'warn' }[] }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-[#d4d8d3] dark:bg-gray-800 border-y border-[#d4d8d3] dark:border-gray-800">
+      {items.map((it) => {
+        const inner = (
+          <>
+            <Eyebrow>{it.label}</Eyebrow>
+            <p className={cn('mt-3 font-display font-medium tracking-[-0.03em] leading-none tabular-nums',
+              typeof it.value === 'number' ? (it.accent ? 'text-5xl md:text-6xl' : 'text-4xl md:text-5xl') : (it.accent ? 'text-3xl md:text-[2.75rem]' : 'text-3xl md:text-4xl'),
+              it.tone === 'bad' ? 'text-red-700' : it.tone === 'warn' ? 'text-amber-700' : it.accent ? 'text-[#053f1a] dark:text-[#4ae386]' : 'text-[#101312] dark:text-white')}>
+              {it.value}
+            </p>
+          </>
+        )
+        const cls = 'bg-[#efefef] dark:bg-gray-950 px-6 py-10 md:py-12 text-center flex flex-col items-center justify-center'
+        return it.href
+          ? <Link key={it.label} href={it.href} className={cn(cls, 'hover:bg-[#e6e8e5] transition-colors')}>{inner}</Link>
+          : <div key={it.label} className={cls}>{inner}</div>
+      })}
+    </div>
   )
 }

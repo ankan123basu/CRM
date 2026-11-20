@@ -75,7 +75,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f3f5] dark:bg-gray-950 flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[#efefef] dark:bg-gray-950 flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center gap-2 mb-8">
           <ProsperrLogo size={30} product="Sales CRM" />

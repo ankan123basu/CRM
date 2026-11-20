@@ -46,7 +46,7 @@ export function ProsperrLogo({
             <span
               className={cn(
                 'mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] whitespace-nowrap',
-                tone === 'light' ? 'text-[#d7b773]' : 'text-[#0a4a1f] dark:text-[#4ae386]'
+                tone === 'light' ? 'text-[#d7b773]' : 'text-[#053f1a] dark:text-[#4ae386]'
               )}
             >
               {product}

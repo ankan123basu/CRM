@@ -154,7 +154,7 @@ function AccountDetail() {
                 if (!list.length) return null
                 return (
                   <div key={d}>
-                    <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-[#0a4a1f] mb-2">{DEPARTMENT_LABEL[d]} · {list.length}</h3>
+                    <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-[#053f1a] mb-2">{DEPARTMENT_LABEL[d]} · {list.length}</h3>
                     <div className="grid md:grid-cols-2 gap-3">
                       {list.map((s: Any) => <StakeholderCard key={s.id} s={s} />)}
                     </div>

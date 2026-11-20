@@ -47,7 +47,7 @@ export default function TopBar({ activePath, onMenuClick }: TopBarProps) {
   }, [])
 
   return (
-    <header className="h-14 flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 bg-[#f3f3f5]/90 dark:bg-gray-950 backdrop-blur px-2 sm:px-5 flex-shrink-0 sticky top-0 z-20">
+    <header className="h-14 flex items-center gap-2 border-b border-[#101312]/80 dark:border-gray-800 bg-[#efefef] dark:bg-gray-950 backdrop-blur px-2 sm:px-5 flex-shrink-0 sticky top-0 z-20">
       <button
         onClick={onMenuClick}
         className="md:hidden flex-shrink-0 p-2 -ml-1 mr-1 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"

@@ -76,7 +76,7 @@ function BadgeLabel({ badge, collapsed }: { badge: Badge; collapsed: boolean }) 
   if (!badge || collapsed) return null
   if (badge.kind === 'beta') {
     return (
-      <span className="rounded-full text-[10px] px-2 py-0.5 bg-[#0a4a1f] text-[#ffffff] font-semibold leading-none">
+      <span className="rounded-full text-[10px] px-2 py-0.5 bg-[#053f1a] text-[#ffffff] font-semibold leading-none">
         Beta
       </span>
     )
@@ -115,8 +115,8 @@ function NavItem({
 
   // Dark forest rail: the active item is a solid white pill, like prosperr.io's CTAs.
   const activeClasses = isActive
-    ? 'bg-[#0a4a1f] text-[#ffffff] font-semibold shadow-sm'
-    : 'text-gray-600 dark:text-gray-400 hover:bg-[#f3f3f5] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 font-medium'
+    ? 'bg-[#053f1a] text-[#ffffff] font-semibold shadow-sm'
+    : 'text-gray-600 dark:text-gray-400 hover:bg-[#efefef] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 font-medium'
 
   const disabledClasses = disabled
     ? 'opacity-60 cursor-not-allowed pointer-events-none'
@@ -214,12 +214,12 @@ function NotificationBell({ collapsed }: { collapsed: boolean }) {
       <button
         onClick={() => setOpen((o) => !o)}
         title="Notifications"
-        className="relative flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[#f3f3f5] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 w-full transition-colors"
+        className="relative flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[#efefef] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 w-full transition-colors"
       >
         <div className="relative flex-shrink-0">
           <Bell className="w-4 h-4" />
           {unread > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#0a4a1f] text-[#ffffff] text-[9px] font-bold rounded-full flex items-center justify-center">
+            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#053f1a] text-[#ffffff] text-[9px] font-bold rounded-full flex items-center justify-center">
               {unread > 9 ? '9+' : unread}
             </span>
           )}
@@ -299,7 +299,7 @@ function DarkModeToggle({ collapsed }: { collapsed: boolean }) {
     <button
       onClick={toggle}
       title={dark ? 'Light mode' : 'Dark mode'}
-      className="flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[#f3f3f5] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 w-full transition-colors"
+      className="flex items-center gap-2.5 px-3 h-9 rounded-full text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-[#efefef] dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 w-full transition-colors"
     >
       <span className="flex-shrink-0">
         {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -460,13 +460,13 @@ export default function Sidebar({
         {userEmail ? (
           collapsed ? (
             <div className="flex justify-center">
-              <div className="w-8 h-8 bg-[#0a4a1f] rounded-full flex items-center justify-center text-xs font-bold text-[#ffffff]">
+              <div className="w-8 h-8 bg-[#053f1a] rounded-full flex items-center justify-center text-xs font-bold text-[#ffffff]">
                 {userInitials}
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2.5 rounded-2xl bg-[#f3f3f5] dark:bg-gray-900 px-2.5 py-2">
-              <div className="w-8 h-8 bg-[#0a4a1f] rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-[#ffffff]">
+            <div className="flex items-center gap-2.5 rounded-2xl bg-[#efefef] dark:bg-gray-900 px-2.5 py-2">
+              <div className="w-8 h-8 bg-[#053f1a] rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-[#ffffff]">
                 {userInitials}
               </div>
               <div className="flex-1 min-w-0">

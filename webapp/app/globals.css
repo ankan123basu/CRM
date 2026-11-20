@@ -13,27 +13,29 @@
 
 /* ── Brand color tokens ────────────────────────────────────────────────────── */
 :root {
-  --background: #f4f5f2;
-  --foreground: #101312;
+  --background: #efefef;   /* prosperr.io nh-bg-light */
+  --foreground: #101312;   /* nh-text-dark */
 
   /* ── Prosperr brand (taken from prosperr.io's stylesheet) ──────────────────
      forest  = announcement bar + pill CTAs      bright = menu / success green
      navy    = PROSPERR.IO wordmark              gold   = premium accent      */
-  --prosperr-forest:      #0a4a1f;
-  --prosperr-forest-deep: #053f1a;
+  --prosperr-forest:      #053f1a;   /* nh-primary */
+  --prosperr-forest-deep: #032e13;
   --prosperr-forest-ink:  #032712;
   --prosperr-bright:      #15be53;
   --prosperr-mint:        #4ae386;
   --prosperr-navy:        #212f63;
   --prosperr-gold:        #d7b773;
-  --prosperr-mist:        #f3f3f5;
+  --prosperr-mist:        #efefef;
+  --prosperr-ink:         #101312;   /* dark sections */
+  --prosperr-divider:     #d4d8d3;
   --prosperr-muted:       #56645a;
 
   /* Legacy names kept so existing components re-skin automatically. */
   --brand-blue:       var(--prosperr-forest);
   --brand-blue-hover: var(--prosperr-forest-deep);
   --brand-violet:     var(--prosperr-bright);
-  --brand-gradient:   linear-gradient(135deg, #0a4a1f 0%, #15be53 100%);
+  --brand-gradient:   linear-gradient(135deg, #053f1a 0%, #15be53 100%);
 
   /* ── Status chip tokens (light mode) ──────────────────────────────────────
      Single source of truth. Components reference these — never hardcode.
@@ -83,7 +85,8 @@
   --color-violet-600: #a87a3e;  --color-violet-700: #8a6232;  --color-violet-800: #6b4b27;
   --color-violet-900: #4e371d;  --color-violet-950: #2e2011;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* prosperr.io's new home sets body AND headings in Bricolage Grotesque. */
+  --font-sans: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -91,7 +94,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Prosperr headings use Bricolage Grotesque, tight tracking, like prosperr.io. */

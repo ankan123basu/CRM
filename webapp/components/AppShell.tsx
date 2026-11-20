@@ -16,7 +16,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }, [pathname])
 
   return (
-    <div className="h-dvh w-screen overflow-hidden flex bg-[#f3f3f5] dark:bg-gray-950">
+    <div className="h-dvh w-screen overflow-hidden flex bg-[#efefef] dark:bg-gray-950">
       <Sidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
 
       {/* Mobile backdrop */}

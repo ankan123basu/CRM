@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { PhoneCall, CalendarClock, CalendarCheck2, RotateCcw, Loader2 } from 'lucide-react'
-import { Headline, IconPanel, Sparkle, Tag, PillLink, ArrowPill } from '@/components/prosperr/brand'
+import { PhoneCall, Handshake, BarChart3, Loader2 } from 'lucide-react'
+import { Headline, IconPanel, Sparkle, Tag, PillLink, ArrowPill, Topo, StatsGrid } from '@/components/prosperr/brand'
 import { STAGE_LABEL, type Stage } from '@/lib/prosperr/constants'
 import { cn } from '@/lib/cn'
 
@@ -54,67 +54,76 @@ export default function HomePage() {
   const role = data.user.role
   const leadership = role === 'MANAGER' || role === 'ADMIN'
 
-  const cards = [
-    {
-      icon: PhoneCall, seed: 2, title: 'Calls and follow-ups', value: callsWaiting,
-      detail: c.overdue ? `${c.overdue} overdue · ${c.dueToday} due today` : `${c.dueToday} due today`,
-      tags: ['Overdue first', 'Then today'], href: '/accounts', tone: c.overdue ? 'bad' : undefined,
-    },
-    {
-      icon: CalendarClock, seed: 4, title: 'No dated next step', value: c.noNextStep,
-      detail: c.noNextStep ? 'Every active account needs an owner and a date' : 'Every account has a next step',
-      tags: ['Pipeline hygiene'], href: '/accounts', tone: c.noNextStep ? 'warn' : undefined,
-    },
-    {
-      icon: CalendarCheck2, seed: 6, title: 'Meetings this week', value: c.upcomingMeetings,
-      detail: c.missingOutcome ? `${c.missingOutcome} past meetings need an outcome` : 'All past meetings have outcomes',
-      tags: ['L1', 'L2', 'L3'], href: '/accounts', tone: c.missingOutcome ? 'warn' : undefined,
-    },
-    {
-      icon: RotateCcw, seed: 8, title: 'Ready to revive', value: c.revivalDue,
-      detail: 'Inactive accounts whose revisit date has come',
-      tags: ['Revisit date reached'], href: '/accounts', tone: undefined,
-    },
-  ] as const
+  const workspaces = [
+    { icon: PhoneCall, seed: 2, title: 'Prospecting', href: '/accounts', tags: ['Accounts', 'Stakeholders', 'Calls', 'Sequences', 'Referrals'] },
+    { icon: Handshake, seed: 4, title: 'Pipeline', href: '/pipeline', tags: ['SQL', 'L1', 'L2', 'L3', 'Negotiation'] },
+    { icon: BarChart3, seed: 6, title: 'Insights', href: '/dashboards', tags: ['Funnel', 'Targets', 'Hygiene', 'Revival'] },
+  ]
 
   return (
-    <div className="px-4 md:px-8 py-8 md:py-12 max-w-[1240px] mx-auto space-y-10">
-      {/* ── Headline ── */}
-      <header className="max-w-3xl">
-        <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#0a4a1f]">
-          <Sparkle className="w-4 h-4" />
-          {role === 'BDR' ? 'Prospecting' : role === 'AE' ? 'Your pipeline' : 'Team view'}
-        </p>
-        <Headline className="mt-3 text-4xl md:text-6xl" muted="Here's your day.">
-          {greeting}, {firstName}.
-        </Headline>
-      </header>
+    <div className="pb-12">
+      {/* ── Dark hero band, like prosperr.io ── */}
+      <section className="relative overflow-hidden bg-[#101312] text-[#efefef]">
+        <Topo seed={5} rings={11} tone="light" />
+        <div aria-hidden className="absolute -left-40 -bottom-48 w-[560px] h-[560px] rounded-full opacity-35" style={{ background: 'radial-gradient(circle, #0d5a28 0%, transparent 62%)' }} />
+        <div className="relative max-w-[1240px] mx-auto px-4 md:px-8 py-12 md:py-16">
+          <p className="inline-flex items-center gap-2 text-sm font-medium text-[#c4cbc6]">
+            <Sparkle className="w-3.5 h-3.5 text-[#4ae386]" />
+            {role === 'BDR' ? 'Prospecting' : role === 'AE' ? 'Your pipeline' : 'Team view'}
+          </p>
+          <h1 className="mt-3 font-display font-normal text-4xl md:text-6xl leading-[1.05] tracking-[-0.04em] max-w-3xl text-balance">
+            {greeting}, {firstName}.
+          </h1>
+          <p className="mt-3 text-lg md:text-xl text-[#efefef]/80 max-w-2xl">
+            Every account needs an owner and a dated next step. Start with what&apos;s overdue.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <PillLink href="/accounts" variant="hero">Open accounts</PillLink>
+            <PillLink href="/pipeline" variant="ghost-dark" arrow={false}>View pipeline</PillLink>
+          </div>
+        </div>
+      </section>
 
-      {/* ── Four focus cards, in prosperr.io's card style ── */}
-      <section className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {cards.map(({ icon: Icon, seed, title, value, detail, tags, href, tone }) => (
-          <Link key={title} href={href} className="group rounded-[1.75rem] bg-white dark:bg-gray-900 p-2 transition-shadow hover:shadow-[0_20px_50px_-30px_rgba(5,63,26,0.45)]">
-            <IconPanel seed={seed} className="h-32">
-              <Icon className="w-12 h-12" strokeWidth={2.25} />
-            </IconPanel>
-            <div className="px-3 pt-4 pb-3">
-              <div className="flex items-baseline justify-between gap-3">
-                <p className="font-display text-xl font-semibold text-[#0d0d0d] dark:text-white">{title}</p>
-                <p className={cn('font-display text-3xl font-semibold tabular-nums', tone === 'bad' ? 'text-red-600' : tone === 'warn' ? 'text-amber-600' : 'text-[#0d0d0d] dark:text-white')}>{value}</p>
+      {/* ── Lined stats grid, like prosperr.io ── */}
+      <section className="max-w-[1240px] mx-auto sm:border-x border-[#d4d8d3] dark:border-gray-800">
+        <StatsGrid items={[
+          { label: 'Calls and follow-ups due', value: callsWaiting, accent: true, tone: c.overdue ? 'bad' : undefined, href: '/accounts' },
+          { label: 'Accounts with no next step', value: c.noNextStep, accent: true, tone: c.noNextStep ? 'warn' : undefined, href: '/accounts' },
+          { label: 'Meetings this week', value: c.upcomingMeetings, href: '/accounts' },
+          { label: 'Inactive, ready to revive', value: c.revivalDue, href: '/accounts' },
+        ]} />
+        <p className="px-6 py-3 text-center text-xs text-[#56645a] border-b border-[#d4d8d3] dark:border-gray-800">
+          {c.overdue} overdue · {c.dueToday} due today{c.missingOutcome ? ` · ${c.missingOutcome} past meetings need an outcome` : ''}
+        </p>
+      </section>
+
+      <div className="px-4 md:px-8 pt-12 max-w-[1240px] mx-auto space-y-12">
+      {/* ── Workspaces, in the Tax / Wealth / Credit card style ── */}
+      <section className="space-y-6">
+        <Headline as="h2" className="text-3xl md:text-5xl text-center mx-auto max-w-2xl" muted="managed in one place.">
+          Your accounts, pipeline and numbers,
+        </Headline>
+        <div className="grid md:grid-cols-3 gap-4">
+          {workspaces.map(({ icon: Icon, seed, title, href, tags }) => (
+            <Link key={title} href={href} className="rounded-[1.75rem] bg-white dark:bg-gray-900 p-2.5 transition-shadow hover:shadow-[0_24px_60px_-34px_rgba(5,63,26,0.5)]">
+              <IconPanel seed={seed} className="h-44">
+                <Icon className="w-16 h-16" strokeWidth={2.4} />
+              </IconPanel>
+              <div className="px-3 pt-5 pb-3">
+                <p className="font-display text-2xl font-normal tracking-[-0.02em] text-[#101312] dark:text-white">{title}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {tags.map((t) => <Tag key={t}>{t}</Tag>)}
+                </div>
               </div>
-              <p className="text-sm text-[#52525b] dark:text-gray-400 mt-1">{detail}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {tags.map((t) => <Tag key={t} className="text-xs px-2.5 py-0.5">{t}</Tag>)}
-              </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* ── Dark-green banner: the one thing to do next ── */}
-      <section className="rounded-[1.75rem] bg-[#0a4a1f] text-[#ffffff] px-6 md:px-10 py-7 flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <section className="rounded-[1.75rem] bg-[#053f1a] text-[#ffffff] px-6 md:px-10 py-7 flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div className="min-w-0">
-          <p className="flex items-start gap-3 font-display text-2xl md:text-3xl font-semibold tracking-[-0.02em] leading-tight">
+          <p className="flex items-start gap-3 font-display text-2xl md:text-3xl font-normal tracking-[-0.03em] leading-tight">
             <Sparkle className="w-6 h-6 mt-1 flex-shrink-0" />
             {data.firstTask
               ? <span>Start with: {data.firstTask.title}</span>
@@ -149,12 +158,12 @@ export default function HomePage() {
                 <li key={s}>
                   <div
                     className={cn('rounded-[1.25rem] px-4 py-4 h-full',
-                      highlight ? 'bg-[#0a4a1f] text-[#ffffff]' : 'bg-[#f3f3f5] dark:bg-gray-800 text-[#0d0d0d] dark:text-white')}
+                      highlight ? 'bg-[#053f1a] text-[#ffffff]' : 'bg-[#efefef] dark:bg-gray-800 text-[#0d0d0d] dark:text-white')}
                   >
                     <p className={cn('text-[11px] font-semibold uppercase tracking-wider truncate', highlight ? 'text-[#ffffff]/70' : 'text-[#52525b] dark:text-gray-400')}>
                       {STAGE_LABEL[s]}
                     </p>
-                    <p className="font-display text-3xl font-semibold tabular-nums mt-1">{n}</p>
+                    <p className="font-display text-3xl font-medium tabular-nums mt-1">{n}</p>
                     {highlight && <p className="text-[11px] mt-1 text-[#ffffff]/70">Where most deals stall</p>}
                   </div>
                 </li>
@@ -163,6 +172,7 @@ export default function HomePage() {
           </ol>
         </div>
       </section>
+      </div>
     </div>
   )
 }
