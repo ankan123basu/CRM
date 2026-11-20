@@ -4,33 +4,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { Loader2 } from 'lucide-react'
-import { ProsperrLogo } from '@/components/ProsperrLogo'
-
-function GoogleIcon() {
-  return (
-    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-    </svg>
-  )
-}
-
-
-function GitHubIcon() {
-  return (
-    <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
-    </svg>
-  )
-}
-
-const OAUTH_BUTTONS = [
-  { provider: 'google', label: 'Google', Icon: GoogleIcon },
-  { provider: 'github', label: 'GitHub', Icon: GitHubIcon },
-]
+import { Loader2, ArrowUpRight, Check } from 'lucide-react'
+import { Headline, Sparkle } from '@/components/prosperr/brand'
+import { AuthShell, GoogleIcon, OrDivider, authInput, authLabel, authPrimary } from '@/components/prosperr/AuthShell'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -54,100 +30,98 @@ export default function SignupPage() {
     const data = await res.json()
 
     if (!res.ok) {
-      setError(data.error ?? 'Failed to create account')
+      setError(data.error ?? 'Could not create your account. Try again.')
       setLoading(false)
       return
     }
 
     const result = await signIn('credentials', { email, password, redirect: false })
     if (!result?.ok) {
-      setError('Account created but sign-in failed. Please go to login.')
+      setError('Your account is ready, but we could not sign you in. Go to Sign in.')
       setLoading(false)
       return
     }
 
-    router.push('/onboarding')
+    router.push('/dashboard')
   }
 
   async function handleOAuth(provider: string) {
     setOauthLoading(provider)
-    await signIn(provider, { callbackUrl: '/onboarding' })
+    await signIn(provider, { callbackUrl: '/dashboard' })
   }
 
+  const strong = password.length >= 8
+
   return (
-    <div className="min-h-screen bg-[#efefef] dark:bg-gray-950 flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <ProsperrLogo size={30} product="Sales CRM" />
+    <AuthShell
+      extended
+      headerCta={{ href: '/login', label: 'Sign in' }}
+      hero={{
+        title: 'Join the team that sells Prosperr Benefits.',
+        subtitle: 'Your accounts, calls and meetings, ready from your first day. One login for every stage of the funnel.',
+        tags: ['BDR', 'Account Executive', 'Sales Manager'],
+      }}
+    >
+      <p className="inline-flex items-center gap-1.5 rounded-full bg-[#eef7f0] text-[#053f1a] px-3 py-1 text-xs font-medium">
+        <Sparkle className="w-3 h-3" /> New to the team
+      </p>
+      <Headline as="h2" className="mt-3 text-3xl sm:text-4xl" muted="your account.">Create</Headline>
+      <p className="text-sm text-[#56645a] dark:text-gray-400 mt-2 mb-7">Use your Prosperr work e-mail. Your manager sets your role after you join.</p>
+
+      <button
+        onClick={() => handleOAuth('google')}
+        disabled={oauthLoading !== null}
+        className="w-full flex items-center justify-center gap-2.5 border border-[#d4d8d3] dark:border-gray-700 rounded-full py-3 text-sm font-medium text-[#101312] dark:text-gray-200 hover:border-[#101312] transition-colors disabled:opacity-60"
+      >
+        {oauthLoading === 'google' ? <Loader2 className="w-4 h-4 animate-spin" /> : <GoogleIcon />}
+        Sign up with Google
+      </button>
+
+      <OrDivider label="or with e-mail" />
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="name" className={authLabel}>Full name</label>
+          <input id="name" type="text" required autoComplete="name" value={name}
+            onChange={e => setName(e.target.value)} placeholder="e.g. Paramita Sen" className={authInput} />
         </div>
-
-        <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm p-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Create your account</h1>
-          <p className="text-sm text-gray-500 mb-6">Free during beta — no credit card needed.</p>
-
-          {/* OAuth buttons — 2x2 grid */}
-          <div className="grid grid-cols-2 gap-2 mb-4">
-            {OAUTH_BUTTONS.map(({ provider, label, Icon }) => (
-              <button
-                key={provider}
-                onClick={() => handleOAuth(provider)}
-                disabled={oauthLoading !== null}
-                className="flex items-center justify-center gap-2 border border-gray-300 dark:border-gray-700 rounded-lg py-3 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-60"
-              >
-                {oauthLoading === provider
-                  ? <Loader2 className="w-4 h-4 animate-spin" />
-                  : <Icon />
-                }
-                {label}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-            <span className="text-xs text-gray-400">or sign up with email</span>
-            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Full name</label>
-              <input id="name" type="text" required value={name} onChange={e => setName(e.target.value)}
-                placeholder="Jane Smith"
-                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email address</label>
-              <input id="email" type="email" required value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Password</label>
-              <input id="password" type="password" required minLength={8} autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
-                className="w-full px-3 py-3 border border-gray-300 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition"
-              />
-            </div>
-
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">{error}</div>
-            )}
-
-            <button type="submit" disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3 rounded-full transition-colors text-sm">
-              {loading ? 'Creating account…' : 'Create account'}
-            </button>
-          </form>
-
-          <p className="text-center text-sm text-gray-500 mt-6">
-            Already have an account?{' '}
-            <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium">Sign in</Link>
+        <div>
+          <label htmlFor="email" className={authLabel}>Work e-mail</label>
+          <input id="email" type="email" required autoComplete="email" value={email}
+            onChange={e => setEmail(e.target.value)} placeholder="name@prosperr.io" className={authInput} />
+        </div>
+        <div>
+          <label htmlFor="password" className={authLabel}>Password</label>
+          <input id="password" type="password" required minLength={8} autoComplete="new-password" value={password}
+            onChange={e => setPassword(e.target.value)} placeholder="At least 8 characters" className={authInput} />
+          <p className={`mt-2 ml-2 text-xs inline-flex items-center gap-1 ${strong ? 'text-[#053f1a]' : 'text-[#a1a1aa]'}`}>
+            <Check className="w-3.5 h-3.5" /> At least 8 characters
           </p>
         </div>
-      </div>
-    </div>
+
+        {error && (
+          <div role="alert" className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-2xl">{error}</div>
+        )}
+
+        <button type="submit" disabled={loading} className={authPrimary}>
+          {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating your account…</> : <>Create account <ArrowUpRight className="w-4 h-4" /></>}
+        </button>
+      </form>
+
+      {/* What happens next: three steps, so a new joiner knows what to expect */}
+      <ol className="mt-7 grid grid-cols-3 gap-2 text-center">
+        {['Create account', 'Manager sets your role', 'Start with My Day'].map((step, i) => (
+          <li key={step} className="rounded-2xl bg-[#efefef] dark:bg-gray-800 px-2 py-3">
+            <span className="mx-auto mb-1.5 flex w-6 h-6 items-center justify-center rounded-full bg-[#053f1a] text-[#ffffff] text-xs font-medium">{i + 1}</span>
+            <span className="block text-[11px] leading-tight text-[#56645a] dark:text-gray-400">{step}</span>
+          </li>
+        ))}
+      </ol>
+
+      <p className="text-center text-sm text-[#56645a] mt-7">
+        Already on the team?{' '}
+        <Link href="/login" className="text-[#053f1a] font-medium hover:underline">Sign in</Link>
+      </p>
+    </AuthShell>
   )
 }
