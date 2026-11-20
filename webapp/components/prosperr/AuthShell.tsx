@@ -63,7 +63,7 @@ export function AuthShell({
 
       {/* Header, as on prosperr.io: logo, quiet nav, one green pill. Sticks while scrolling. */}
       <header className="sticky top-0 z-30 bg-[#efefef]/95 dark:bg-gray-950/95 backdrop-blur border-b border-[#101312]">
-        <div className="w-full flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-10 h-16 sm:h-[5.5rem]">
+        <div className="w-full flex items-center justify-between gap-4 px-5 sm:px-8 lg:px-14 h-16 sm:h-[5.5rem]">
           <Link href="/login" aria-label="Prosperr Sales CRM" className="flex items-center gap-3">
             <ProsperrLogo size={32} />
             <span className="hidden sm:inline-flex items-center rounded-full border border-[#101312]/15 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[#56645a]">Sales CRM</span>
