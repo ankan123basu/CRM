@@ -7,6 +7,7 @@ import { signIn } from 'next-auth/react'
 import { Loader2, ArrowUpRight } from 'lucide-react'
 import { Headline, Sparkle } from '@/components/prosperr/brand'
 import { AuthShell, GoogleIcon } from '@/components/prosperr/AuthShell'
+import { useGreeting } from '@/lib/prosperr/useGreeting'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -16,9 +17,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [oauthLoading, setOauthLoading] = useState<string | null>(null)
 
-  // Time-of-day greeting in IST, so the card feels personal on first and later visits.
-  const hourIST = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }).format(new Date()))
-  const greeting = hourIST < 12 ? 'Good morning' : hourIST < 17 ? 'Good afternoon' : 'Good evening'
+  // Live IST greeting; updates every minute while the page is open.
+  const greeting = useGreeting()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -49,8 +49,8 @@ export default function LoginPage() {
         tags: ['CFO', 'CHRO', 'Head of Payroll', 'C&B', 'Total Rewards'],
       }}
     >
-            <p suppressHydrationWarning className="inline-flex items-center gap-1.5 rounded-full bg-[#eef7f0] text-[#053f1a] px-3 py-1 text-xs font-medium">
-              <Sparkle className="w-3 h-3" /> {greeting}
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-[#eef7f0] text-[#053f1a] px-3 py-1 text-xs font-medium min-h-[1.5rem]">
+              <Sparkle className="w-3 h-3" /> {greeting ?? 'Prosperr Sales CRM'}
             </p>
             <Headline as="h2" className="mt-3 text-3xl sm:text-[2.6rem]">
               Welcome to <span className="block text-prosperr-gradient font-semibold pb-1">Prosperr CRM.</span>

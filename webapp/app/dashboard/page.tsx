@@ -8,6 +8,7 @@ import { PhoneCall, Handshake, BarChart3, Loader2 } from 'lucide-react'
 import { Headline, IconPanel, Sparkle, Tag, PillLink, ArrowPill, Topo, StatsGrid } from '@/components/prosperr/brand'
 import { STAGE_LABEL, type Stage } from '@/lib/prosperr/constants'
 import { cn } from '@/lib/cn'
+import { useGreeting } from '@/lib/prosperr/useGreeting'
 
 interface HomeData {
   user: { name: string | null; role: string }
@@ -23,6 +24,7 @@ export default function HomePage() {
   const router = useRouter()
   const [data, setData] = useState<HomeData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const greeting = useGreeting() ?? 'Hello'
 
   useEffect(() => {
     if (status === 'unauthenticated') router.replace('/login')
@@ -47,8 +49,6 @@ export default function HomePage() {
   }
 
   const firstName = (data.user.name ?? 'there').split(' ')[0]
-  const hourIST = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }).format(new Date()))
-  const greeting = hourIST < 12 ? 'Good morning' : hourIST < 17 ? 'Good afternoon' : 'Good evening'
   const c = data.counts
   const callsWaiting = c.overdue + c.dueToday
   const role = data.user.role
