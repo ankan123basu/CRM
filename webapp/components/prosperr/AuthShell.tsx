@@ -63,14 +63,14 @@ export function AuthShell({
 
       {/* Header, as on prosperr.io: logo, quiet nav, one green pill. Sticks while scrolling. */}
       <header className="sticky top-0 z-30 bg-[#efefef]/95 dark:bg-gray-950/95 backdrop-blur border-b border-[#101312]">
-        <div className="max-w-[1240px] mx-auto flex items-center justify-between gap-4 px-4 sm:px-8 h-16 sm:h-[5.5rem]">
+        <div className="w-full flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-10 h-16 sm:h-[5.5rem]">
           <Link href="/login" aria-label="Prosperr Sales CRM" className="flex items-center gap-3">
             <ProsperrLogo size={32} />
             <span className="hidden sm:inline-flex items-center rounded-full border border-[#101312]/15 px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[#56645a]">Sales CRM</span>
           </Link>
-          <nav className="flex items-center gap-2 sm:gap-8">
+          <nav className="flex items-center gap-2 sm:gap-8 h-full">
             {[[`${base}#workflow`, 'Workflow'], [`${base}#roles`, 'Who it’s for'], ['#help', 'Help']].map(([href, label]) => (
-              <a key={href} href={href} className="hidden md:inline text-base font-medium text-[#101312] dark:text-gray-200 hover:text-[#053f1a] transition-colors">
+              <a key={href} href={href} className="hidden md:inline-flex items-center h-10 text-base leading-none font-medium text-[#101312] dark:text-gray-200 hover:text-[#053f1a] transition-colors">
                 {label}
               </a>
             ))}
